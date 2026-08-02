@@ -1,4 +1,3 @@
-# Wrote README.md
 # DO Status Hub
 
 Multi-page analytics dashboard for Delivery Order (DO) status tracking, truck planning, batch analytics and shipping insight. Pure **HTML5 + CSS3 + vanilla JavaScript (ES6+)** — no framework, no build step. Excel files are parsed directly in the browser with SheetJS, and charts are rendered with Chart.js.
