@@ -2046,7 +2046,7 @@ body.light-mode .file-chip.purple {
     max-height: 540px;
     scrollbar-gutter: stable;
     border-radius: 6px;
-    border: 1px solid #18181b;
+    border: 1px solid var(--border, #18181b);
 }
 
 table.compact-table {
@@ -2058,14 +2058,14 @@ table.compact-table {
 }
 
 table.compact-table thead th {
-    background-color: #09090b !important;
-    color: #a1a1aa !important;
+    background-color: var(--surface-solid, #09090b) !important;
+    color: var(--fg-muted, #a1a1aa) !important;
     padding: 6px 10px !important;
     font-weight: 700 !important;
     font-size: 11px !important;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    border-bottom: 2px solid #27272a;
+    border-bottom: 2px solid var(--border, #27272a);
     position: sticky;
     top: 0;
     z-index: 5;
@@ -2074,8 +2074,8 @@ table.compact-table thead th {
 
 table.compact-table tbody td {
     padding: 5px 10px !important;
-    border-bottom: 1px solid #141417;
-    color: #e4e4e7 !important;
+    border-bottom: 1px solid var(--border, #141417);
+    color: var(--fg, #e4e4e7) !important;
     font-size: 12px !important;
     line-height: 1.25;
     vertical-align: middle;
@@ -2087,22 +2087,22 @@ table.compact-table tbody tr {
 }
 
 table.compact-table tbody tr:nth-child(even) {
-    background-color: #09090b;
+    background-color: var(--surface, rgba(255, 255, 255, 0.04));
 }
 
 table.compact-table tbody tr:nth-child(odd) {
-    background-color: #050505;
+    background-color: transparent;
 }
 
 table.compact-table tbody tr:hover {
-    background-color: #1a1a20 !important;
+    background-color: var(--surface-hover, #1a1a20) !important;
 }
 
 table.compact-table .compact-remark-input,
 table.compact-table .compact-input {
-    background: #121215;
-    color: #ffffff;
-    border: 1px solid #27272a;
+    background: var(--surface-solid, #121215);
+    color: var(--fg, #ffffff);
+    border: 1px solid var(--border, #27272a);
     border-radius: 4px;
     padding: 3px 6px;
     font-size: 11px;
@@ -2113,8 +2113,8 @@ table.compact-table .compact-input {
 
 table.compact-table .compact-remark-input:focus,
 table.compact-table .compact-input:focus {
-    border-color: #8b5cf6;
-    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+    border-color: var(--accent, #8b5cf6);
+    box-shadow: 0 0 0 2px var(--accent-glow, rgba(139, 92, 246, 0.2));
 }
 
 table.compact-table .compact-input.missing-highlight {
