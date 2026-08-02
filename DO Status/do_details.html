@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DO Line Item Breakdown</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- AMOLED Left Sidebar Navigation -->
+        <div class="sidebar">
+            <div>
+                <div class="sidebar-brand">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="1" y="3" width="15" height="13"/>
+                        <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+                        <circle cx="5.5" cy="18.5" r="2.5"/>
+                        <circle cx="18.5" cy="18.5" r="2.5"/>
+                    </svg>
+                    <div>
+                        <div class="sidebar-brand-title">DO Status Hub</div>
+                        <div class="sidebar-brand-subtitle">Analytics & Scanning</div>
+                    </div>
+                </div>
+
+                <ul class="sidebar-nav">
+                    <li>
+                        <a href="index.html" class="sidebar-nav-item">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="7" height="9"/>
+                                <rect x="14" y="3" width="7" height="5"/>
+                                <rect x="14" y="12" width="7" height="9"/>
+                                <rect x="3" y="16" width="7" height="5"/>
+                            </svg>
+                            <span>Summary Analytics</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="shipping_insight.html" class="sidebar-nav-item">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="20" x2="18" y2="10"/>
+                                <line x1="12" y1="20" x2="12" y2="4"/>
+                                <line x1="6" y1="20" x2="6" y2="14"/>
+                            </svg>
+                            <span>Shipping Insight</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="do_details.html" class="sidebar-nav-item active">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                <line x1="16" y1="13" x2="8" y2="13"/>
+                                <line x1="16" y1="17" x2="8" y2="17"/>
+                            </svg>
+                            <span>DO Details Inspector</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="truck_planning.html" class="sidebar-nav-item">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="1" y="3" width="15" height="13"/>
+                                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+                                <circle cx="5.5" cy="18.5" r="2.5"/>
+                                <circle cx="18.5" cy="18.5" r="2.5"/>
+                            </svg>
+                            <span>Truck Planning</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="batch_analytics.html" class="sidebar-nav-item">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                                <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                                <line x1="12" y1="22.08" x2="12" y2="12"/>
+                            </svg>
+                            <span>Batch Analytics</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="do_summary_generator.html" class="sidebar-nav-item">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                <line x1="12" y1="18" x2="12" y2="12"/>
+                                <line x1="9" y1="15" x2="15" y2="15"/>
+                            </svg>
+                            <span>DO Summary Generator</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="challenger_list.html" class="sidebar-nav-item">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 11l3 3L22 4"/>
+                                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                            </svg>
+                            <span>Challenger List</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="do_activity_trend.html" class="sidebar-nav-item">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M2 20h20"/>
+                                <path d="M4 20v-6"/>
+                                <path d="M9 20V10"/>
+                                <path d="M14 20V6"/>
+                                <path d="M19 20V2"/>
+                            </svg>
+                            <span>DO Activity Trend</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div style="padding: 12px; border-top: 1px solid #18181b; font-size: 11px; color: #71717a; text-align: center;">
+                DO Status System v2.4
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- Header Banner Section -->
+            <div class="header">
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <div style="color: #3b82f6; display: flex; align-items: center;">
+                        <!-- Specification Document Vector Logo -->
+                        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+                    </div>
+                    <div>
+                        <h1 style="font-size: 20px; margin: 0;">DO Line Item Specification</h1>
+                        <p style="font-size: 12px; color: #a1a1aa; margin-top: 4px;" id="subHeading">Selected DO Details Analysis</p>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <button id="backToSourceBtn" onclick="goBackToSource()" style="background-color:#064e3b; color:#ffffff; border:1px solid #10b981; padding:8px 16px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:700; display:flex; align-items:center; gap:6px;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                        Back to Shipping Insight
+                    </button>
+                    <button id="themeToggleBtn" onclick="toggleTheme()" style="cursor:pointer;">Mode: Dark</button>
+                    <button onclick="window.close()" style="background-color:#334155; color:#ffffff; border:1px solid #475569; padding:8px 16px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:700; display:flex; align-items:center; gap:6px;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        Close Tab
+                    </button>
+                </div>
+            </div>
+
+            <!-- Overview Metadata Cards with Dedicated Icons -->
+            <div class="kpi-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin-bottom: 24px;">
+        <!-- DO Invoice KPI Card -->
+        <div class="kpi-card">
+            <div class="kpi-card-header">
+                <div class="title">DO / Invoice No</div>
+                <div class="kpi-icon" style="color: #3b82f6;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                </div>
+            </div>
+            <div class="value" id="doInvDisplay" style="font-size: 20px; font-weight: 700; margin-top: 8px;">-</div>
+        </div>
+
+        <!-- Consignee Name KPI Card -->
+        <div class="kpi-card">
+            <div class="kpi-card-header">
+                <div class="title">Consignee Name</div>
+                <div class="kpi-icon" style="color: #3b82f6;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </div>
+            </div>
+            <div class="value" id="doConsigneeDisplay" style="font-size: 16px; font-weight: 700; margin-top: 8px;">-</div>
+        </div>
+
+        <!-- Total Volume (m³) KPI Card -->
+        <div class="kpi-card green">
+            <div class="kpi-card-header">
+                <div class="title">Total Volume (m³)</div>
+                <div class="kpi-icon" style="color: #10b981;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                </div>
+            </div>
+            <div class="value" id="doVolDisplay" style="font-size: 20px; font-weight: 700; margin-top: 8px;">0.0000 m³</div>
+        </div>
+
+        <!-- Total Quantity KPI Card -->
+        <div class="kpi-card purple">
+            <div class="kpi-card-header">
+                <div class="title">Total Quantity</div>
+                <div class="kpi-icon" style="color: #8b5cf6;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                </div>
+            </div>
+            <div class="value" id="doQtyDisplay" style="font-size: 20px; font-weight: 700; margin-top: 8px;">-</div>
+        </div>
+
+        <!-- DO Category KPI Card -->
+        <div class="kpi-card yellow">
+            <div class="kpi-card-header">
+                <div class="title">DO Category</div>
+                <div class="kpi-icon" style="color: #f59e0b;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                </div>
+            </div>
+            <div class="value" id="doCatDisplay" style="font-size: 18px; font-weight: 700; margin-top: 8px;">-</div>
+        </div>
+    </div>
+
+    <!-- Product Line Items Table -->
+    <div class="table-card">
+        <div style="margin-bottom: 16px;">
+            <h3 style="margin-bottom: 4px;">Associated Product Line Items</h3>
+            <p style="font-size: 12px; color: #64748b;">Line-level product code breakdown and item quantities</p>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">#</th>
+                        <th>Route</th>
+                        <th>Product Code</th>
+                        <th>Item Description</th>
+                        <th class="number-col" style="width: 160px;">Ship Quantity</th>
+                    </tr>
+                </thead>
+                <tbody id="detailsTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+        </div> <!-- End .main-content -->
+    </div> <!-- End .app-container -->
+
+    <script src="js/charts.js"></script>
+    <script>
+        function loadDoDetails() {
+            const TargetInv = localStorage.getItem("SelectedDoForDetails");
+            if (!TargetInv) {
+                alert("[INFO] No DO selected for inspection!");
+                return;
+            }
+
+            const DoSummaryData = JSON.parse(localStorage.getItem("LastUploadedDoSummary")) || [];
+            const RouteMasterData = JSON.parse(localStorage.getItem("LastUploadedRouteData")) || {};
+
+            const DoRecord = DoSummaryData.find(item => item.inv === TargetInv) || {};
+            const RouteRecord = RouteMasterData[TargetInv] || { items: [], doCategory: "N/A" };
+
+            // Render KPI Header Info
+            document.getElementById("doInvDisplay").innerText = TargetInv;
+            document.getElementById("doConsigneeDisplay").innerText = DoRecord.name || "N/A";
+            document.getElementById("doQtyDisplay").innerText = DoRecord.qty ? DoRecord.qty.toLocaleString() : "0";
+
+            const VolNum = (DoRecord.vol && !isNaN(DoRecord.vol)) ? DoRecord.vol : 0;
+            document.getElementById("doVolDisplay").innerText = VolNum > 0 ? VolNum.toFixed(4) + " m³" : "0.0000 m³";
+
+            document.getElementById("doCatDisplay").innerText = (RouteRecord.doCategory || "N/A").toUpperCase();
+            document.getElementById("subHeading").innerText = `Destination Address: ${DoRecord.addr || "N/A"}`;
+
+            const tbody = document.getElementById("detailsTableBody");
+            tbody.innerHTML = "";
+
+            const rawItems = RouteRecord.items || [];
+
+            if (rawItems.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:32px; color:#64748b;">No mapped product master records found for this DO. Please ensure Route / Product file is uploaded.</td></tr>`;
+                return;
+            }
+
+            // Group duplicate product codes and sum their Column J SHIP_QUANTITY values
+            const GroupedMap = {};
+            rawItems.forEach(item => {
+                const itemRoute = item.route || RouteRecord.route || DoRecord.route || "N/A";
+                const key = `${itemRoute}||${item.code}||${item.desc}`;
+                const lineQty = (item.qty && !isNaN(item.qty)) ? item.qty : 1;
+
+                if (!GroupedMap[key]) {
+                    GroupedMap[key] = { route: itemRoute, code: item.code, desc: item.desc, qty: 0 };
+                }
+                GroupedMap[key].qty += lineQty;
+            });
+
+            const FinalItems = Object.values(GroupedMap);
+
+            FinalItems.forEach((item, idx) => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td><strong>${idx + 1}</strong></td>
+                    <td><span style="color:#0284c7; font-weight:600;">${item.route}</span></td>
+                    <td><span style="color:#3b82f6; font-weight:700;">${item.code || "Unspecified"}</span></td>
+                    <td><span style="color:#10b981; font-weight:600;">${item.desc || "No Description"}</span></td>
+                    <td class="number-col"><span style="color:#8b5cf6; font-weight:700; font-size:14px;">${item.qty.toLocaleString()} pcs</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function goBackToSource() {
+            const returnTo = localStorage.getItem("DoDetailsReturnTo") || "shipping_insight.html";
+            
+            // If we were opened as a new tab (window.opener exists), close this tab
+            // The browser will automatically focus back to the original tab
+            if (window.opener && !window.opener.closed) {
+                window.close();
+            } else {
+                // Fallback: navigate back to source page with state restoration
+                window.location.href = returnTo;
+            }
+        }
+
+        // Update back button label based on source page
+        function updateBackButtonLabel() {
+            const returnTo = localStorage.getItem("DoDetailsReturnTo") || "shipping_insight.html";
+            const backBtn = document.getElementById("backToSourceBtn");
+            if (backBtn) {
+                let label = "Back to Shipping Insight";
+                if (returnTo === "summary.html" || returnTo === "index.html") {
+                    label = "Back to Summary";
+                } else if (returnTo === "truck_planning.html") {
+                    label = "Back to Truck Planning";
+                }
+                backBtn.innerHTML = "&larr; " + label;
+            }
+        }
+
+        window.onload = function() {
+            if (typeof initTheme === 'function') initTheme();
+            updateBackButtonLabel();
+            loadDoDetails();
+        };
+    </script>
+</body>
+</html>

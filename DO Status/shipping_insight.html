@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DO Status Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- AMOLED Left Sidebar Navigation -->
+        <div class="sidebar">
+            <div>
+                <div class="sidebar-brand">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="1" y="3" width="15" height="13"/>
+                        <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+                        <circle cx="5.5" cy="18.5" r="2.5"/>
+                        <circle cx="18.5" cy="18.5" r="2.5"/>
+                    </svg>
+                    <div>
+                        <div class="sidebar-brand-title">DO Status Hub</div>
+                        <div class="sidebar-brand-subtitle">Analytics & Scanning</div>
+                    </div>
+                </div>
+
+                <ul class="sidebar-nav">
+                    <li>
+                        <a href="index.html" class="sidebar-nav-item">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="7" height="9"/>
+                                <rect x="14" y="3" width="7" height="5"/>
+                                <rect x="14" y="12" width="7" height="9"/>
+                                <rect x="3" y="16" width="7" height="5"/>
+                            </svg>
+                            <span>Summary Analytics</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="shipping_insight.html" class="sidebar-nav-item active">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="20" x2="18" y2="10"/>
+                                <line x1="12" y1="20" x2="12" y2="4"/>
+                                <line x1="6" y1="20" x2="6" y2="14"/>
+                            </svg>
+                            <span>Shipping Insight</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="do_details.html" class="sidebar-nav-item">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                <line x1="16" y1="13" x2="8" y2="13"/>
+                                <line x1="16" y1="17" x2="8" y2="17"/>
+                            </svg>
+                            <span>DO Details Inspector</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="truck_planning.html" class="sidebar-nav-item">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="1" y="3" width="15" height="13"/>
+                                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+                                <circle cx="5.5" cy="18.5" r="2.5"/>
+                                <circle cx="18.5" cy="18.5" r="2.5"/>
+                            </svg>
+                            <span>Truck Planning</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="batch_analytics.html" class="sidebar-nav-item">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                                <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                                <line x1="12" y1="22.08" x2="12" y2="12"/>
+                            </svg>
+                            <span>Batch Analytics</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="do_summary_generator.html" class="sidebar-nav-item">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                <line x1="12" y1="18" x2="12" y2="12"/>
+                                <line x1="9" y1="15" x2="15" y2="15"/>
+                            </svg>
+                            <span>DO Summary Generator</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="challenger_list.html" class="sidebar-nav-item">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 11l3 3L22 4"/>
+                                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                            </svg>
+                            <span>Challenger List</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="do_activity_trend.html" class="sidebar-nav-item">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M2 20h20"/>
+                                <path d="M4 20v-6"/>
+                                <path d="M9 20V10"/>
+                                <path d="M14 20V6"/>
+                                <path d="M19 20V2"/>
+                            </svg>
+                            <span>DO Activity Trend</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div style="padding: 12px; border-top: 1px solid #18181b; font-size: 11px; color: #71717a; text-align: center;">
+                DO Status System v2.4
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- Header Banner Section -->
+            <div class="header">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div style="color: #10b981; display: flex; align-items: center;">
+                        <!-- Shipping Insight Gauge Vector Icon -->
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="20" x2="18" y2="10"/>
+                            <line x1="12" y1="20" x2="12" y2="4"/>
+                            <line x1="6" y1="20" x2="6" y2="14"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 style="font-size: 20px; margin: 0;">Shipping Insight Dashboard</h1>
+                        <p style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Derived Status Analysis & Scanning Confirmation</p>
+                    </div>
+                </div>
+
+                <!-- Saved Document Information (Positioned directly above upload button section) -->
+                <div id="memoryStatusBadge" class="memory-status-badge" style="margin-top: 10px; margin-bottom: 10px;"></div>
+
+                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                    <div class="file-upload-box">
+                        <label for="insightPicker">Upload Insight File (.xlsx):</label>
+                        <input type="file" id="insightPicker" accept=".xlsx, .xls, .xlsm" onchange="handleShippingInsightUpload(event)">
+                    </div>
+                    <div class="filter-box">
+                        <label for="typeFilter">Filter DO Type:</label>
+                        <select id="typeFilter" onchange="applyInsightFilter()">
+                            <option value="ALL">All Types</option>
+                            <option value="BIG">Big DO</option>
+                            <option value="SMALL">Small DO</option>
+                            <option value="MIX">Mix DO</option>
+                            <option value="PENDING">Pending Scan</option>
+                            <option value="IN_PROCESS">In Process</option>
+                            <option value="UNMATCHED DO">Unmatched DO</option>
+                        </select>
+                    </div>
+                    <button id="themeToggleBtn" onclick="toggleTheme()" style="cursor:pointer;">Mode: Dark</button>
+                </div>
+            </div>
+
+            <!-- Top 4 KPI Cards Grid -->
+            <div class="kpi-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin-bottom: 20px;">
+                <div class="kpi-card">
+                    <div class="kpi-card-header">
+                        <div class="kpi-title">Total DOs</div>
+                        <div class="kpi-icon" style="color: #3b82f6;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                        </div>
+                    </div>
+                    <div class="kpi-value" id="kpi-total">0</div>
+                    <div class="kpi-sub">Filter Context</div>
+                </div>
+
+                <div class="kpi-card green">
+                    <div class="kpi-card-header">
+                        <div class="kpi-title">Completed</div>
+                        <div class="kpi-icon" style="color: #10b981;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        </div>
+                    </div>
+                    <div class="kpi-value" id="kpi-completed">0</div>
+                    <div class="kpi-sub" id="pct-completed">0%</div>
+                </div>
+
+                <div class="kpi-card purple">
+                    <div class="kpi-card-header">
+                        <div class="kpi-title">In Process</div>
+                        <div class="kpi-icon" style="color: #8b5cf6;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                        </div>
+                    </div>
+                    <div class="kpi-value" id="kpi-process">0</div>
+                    <div class="kpi-sub" id="pct-process">0%</div>
+                </div>
+
+                <div class="kpi-card yellow">
+                    <div class="kpi-card-header">
+                        <div class="kpi-title">Pending</div>
+                        <div class="kpi-icon" style="color: #f59e0b;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        </div>
+                    </div>
+                    <div class="kpi-value" id="kpi-pending">0</div>
+                    <div class="kpi-sub" id="pct-pending">0%</div>
+                </div>
+            </div>
+
+            <!-- Mini Summary Dashboard Strip -->
+            <div class="table-card" style="padding: 10px 18px; margin-bottom: 20px; display: flex; align-items: stretch; justify-content: center; flex-wrap: wrap; gap: 0;">
+                <div style="display: flex; flex-direction: column; align-items: center; padding: 4px 24px;">
+                    <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: #64748b;"><span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:#ef4444; margin-right:5px;"></span>Unmatched</span>
+                    <span id="sum-unmatched" style="font-size: 18px; font-weight: 700; color: #ef4444; line-height: 1.3;">0</span>
+                </div>
+                <div style="width: 1px; align-self: stretch; background: #1e293b; margin: 2px 0;"></div>
+                <div style="display: flex; flex-direction: column; align-items: center; padding: 4px 24px;">
+                    <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: #64748b;"><span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:#3b82f6; margin-right:5px;"></span>Big</span>
+                    <span id="cat-big" style="font-size: 18px; font-weight: 700; color: #60a5fa; line-height: 1.3;">0</span>
+                </div>
+                <div style="width: 1px; align-self: stretch; background: #1e293b; margin: 2px 0;"></div>
+                <div style="display: flex; flex-direction: column; align-items: center; padding: 4px 24px;">
+                    <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: #64748b;"><span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:#f59e0b; margin-right:5px;"></span>Small</span>
+                    <span id="cat-small" style="font-size: 18px; font-weight: 700; color: #fbbf24; line-height: 1.3;">0</span>
+                </div>
+                <div style="width: 1px; align-self: stretch; background: #1e293b; margin: 2px 0;"></div>
+                <div style="display: flex; flex-direction: column; align-items: center; padding: 4px 24px;">
+                    <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: #64748b;"><span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:#10b981; margin-right:5px;"></span>Mix</span>
+                    <span id="cat-mix" style="font-size: 18px; font-weight: 700; color: #34d399; line-height: 1.3;">0</span>
+                </div>
+            </div>
+
+            <!-- Progress Gauges Horizontal Row -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px;">
+                <div class="chart-card" style="text-align: center; padding: 16px;">
+                    <h3 style="font-size: 13px; color: #cbd5e1; margin-bottom: 4px;">Overall Completion Gauge</h3>
+                    <div style="height: 120px; position: relative;">
+                        <canvas id="overallMeterChart"></canvas>
+                    </div>
+                    <div id="overallMeterText" style="font-size: 18px; font-weight: 700; color: #10b981; margin-top: -20px;">0%</div>
+                </div>
+
+                <div class="chart-card" style="text-align: center; padding: 16px;">
+                    <h3 style="font-size: 13px; color: #cbd5e1; margin-bottom: 4px;">BIG DO Progress</h3>
+                    <div style="height: 120px; position: relative;">
+                        <canvas id="bigTypeChart"></canvas>
+                    </div>
+                    <div id="bigPctText" style="font-size: 13px; font-weight: 700; color: #8b5cf6; margin-top: 2px;">0%</div>
+                    <div id="bigPendingText" style="font-size: 12px; font-weight: 600; color: #f59e0b; margin-top: 4px;">0 DO Pending Left</div>
+                </div>
+
+                <div class="chart-card" style="text-align: center; padding: 16px;">
+                    <h3 style="font-size: 13px; color: #cbd5e1; margin-bottom: 4px;">SMALL DO Progress</h3>
+                    <div style="height: 120px; position: relative;">
+                        <canvas id="smallTypeChart"></canvas>
+                    </div>
+                    <div id="smallPctText" style="font-size: 13px; font-weight: 700; color: #3b82f6; margin-top: 2px;">0%</div>
+                    <div id="smallPendingText" style="font-size: 12px; font-weight: 600; color: #f59e0b; margin-top: 4px;">0 DO Pending Left</div>
+                </div>
+
+                <div class="chart-card" style="text-align: center; padding: 16px;">
+                    <h3 style="font-size: 13px; color: #cbd5e1; margin-bottom: 4px;">MIX DO Progress</h3>
+                    <div style="height: 120px; position: relative;">
+                        <canvas id="mixTypeChart"></canvas>
+                    </div>
+                    <div id="mixPctText" style="font-size: 13px; font-weight: 700; color: #f59e0b; margin-top: 2px;">0%</div>
+                </div>
+            </div>
+
+            <!-- Full Width Detailed Status Manifest Table Card -->
+            <div class="table-card" style="margin-bottom: 24px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+                    <div>
+                        <h3 style="margin: 0; font-size: 16px;">Detailed Status Manifest</h3>
+                        <p style="font-size: 12px; color: #94a3b8; margin-top: 2px;">Line-by-line scanning status and truck allocation</p>
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                        <!-- Truck Filter Dropdown -->
+                        <div class="filter-box" style="padding: 6px 12px !important;">
+                            <label for="truckFilter" style="font-size: 12px; color: #a1a1aa;">Truck:</label>
+                            <select id="truckFilter" onchange="applyInsightFilter()" style="font-size: 12px; padding: 4px 8px;">
+                                <option value="ALL">All Trucks</option>
+                            </select>
+                        </div>
+
+                        <!-- Hub Filter Dropdown -->
+                        <div class="filter-box" style="padding: 6px 12px !important;">
+                            <label for="hubFilter" style="font-size: 12px; color: #a1a1aa;">Hub:</label>
+                            <select id="hubFilter" onchange="applyInsightFilter()" style="font-size: 12px; padding: 4px 8px;">
+                                <option value="ALL">All Hubs</option>
+                            </select>
+                        </div>
+
+                        <!-- Search Input Box -->
+                        <div style="position: relative; display: inline-block;">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                            <input type="text" id="insightSearch" class="search-box" placeholder="Search DOs, Status, Address..." onkeyup="applyInsightFilter()" style="padding-left: 32px;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="compact-wrapper">
+                    <table class="compact-table">
+                        <thead>
+                            <tr>
+                                <th>DO Number</th>
+                                <th>Truck Number</th>
+                                <th>Hub</th>
+                                <th>Address</th>
+                                <th>Scanning Status</th>
+                                <th>DO Type</th>
+                            </tr>
+                        </thead>
+                        <tbody id="insightTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div> <!-- End .main-content -->
+    </div> <!-- End .app-container -->
+    <script src="js/parsers.js"></script>
+    <script src="js/charts.js"></script>
+    <script>
+        let RawPayload = JSON.parse(localStorage.getItem("ShippingInsightData")) || [];
+        let StatusChartObj = null;
+        let OverallMeterObj = null;
+        let BigTypeChartObj = null;
+        let SmallTypeChartObj = null;
+        let MixTypeChartObj = null;
+        let celebrationTimeoutId = null;
+        let LastCelebratedKey = null;
+        let pendingStateRestore = !!localStorage.getItem("ShippingInsightFilterState");
+
+        function openDoDetailsTab(invoiceNo) {
+            if (!invoiceNo) return;
+            localStorage.setItem("SelectedDoForDetails", invoiceNo);
+            localStorage.setItem("DoDetailsReturnTo", "shipping_insight.html");
+            saveInsightFilterState();
+            window.open('do_details.html', '_blank');
+        }
+
+        // Persist current filter selections so they can be restored on return navigation
+        function saveInsightFilterState() {
+            const state = {
+                type: document.getElementById("typeFilter")?.value || "ALL",
+                truck: document.getElementById("truckFilter")?.value || "ALL",
+                hub: document.getElementById("hubFilter")?.value || "ALL",
+                search: document.getElementById("insightSearch")?.value || ""
+            };
+            localStorage.setItem("ShippingInsightFilterState", JSON.stringify(state));
+        }
+
+        // Restore saved filter selections after dropdowns have been populated
+        function restoreInsightFilterState() {
+            const saved = localStorage.getItem("ShippingInsightFilterState");
+            if (!saved) return;
+            try {
+                const state = JSON.parse(saved);
+
+                const typeSelect = document.getElementById("typeFilter");
+                if (typeSelect && state.type) {
+                    const exists = Array.from(typeSelect.options).some(o => o.value === state.type);
+                    if (exists) typeSelect.value = state.type;
+                }
+
+                const truckSelect = document.getElementById("truckFilter");
+                if (truckSelect && state.truck) {
+                    const exists = Array.from(truckSelect.options).some(o => o.value === state.truck);
+                    if (exists) truckSelect.value = state.truck;
+                }
+
+                const hubSelect = document.getElementById("hubFilter");
+                if (hubSelect && state.hub) {
+                    const exists = Array.from(hubSelect.options).some(o => o.value === state.hub);
+                    if (exists) hubSelect.value = state.hub;
+                }
+
+                const searchInput = document.getElementById("insightSearch");
+                if (searchInput && typeof state.search === "string") {
+                    searchInput.value = state.search;
+                }
+            } catch (e) {}
+        }
+
+        function trigger100PctCelebration(customText) {
+            const bannerText = customText || "ALL DO COMPLETE SCAN";
+            let celebrateBanner = document.getElementById("celebrationBanner");
+
+            // Cancel any active hide timer so rapid filter switches don't cut short the popup
+            if (celebrationTimeoutId) {
+                clearTimeout(celebrationTimeoutId);
+                celebrationTimeoutId = null;
+            }
+
+            if (!celebrateBanner) {
+                celebrateBanner = document.createElement("div");
+                celebrateBanner.id = "celebrationBanner";
+                celebrateBanner.className = "celebration-banner";
+                celebrateBanner.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%) scale(0.5);
+                    padding: 24px 52px;
+                    font-size: 26px;
+                    font-weight: 800;
+                    letter-spacing: 1px;
+                    z-index: 9999;
+                    opacity: 0;
+                    pointer-events: auto;
+                    cursor: pointer;
+                    user-select: none;
+                    transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s ease;
+                    display: flex;
+                    align-items: center;
+                    gap: 18px;
+                    text-align: center;
+                `;
+                celebrateBanner.innerHTML = `
+                    <div style="background: rgba(255, 255, 255, 0.2); border-radius: 50%; width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; border: 3px solid #ffffff; flex-shrink: 0;">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+                            <path class="animate-tick-path" d="M20 6L9 17l-5-5"/>
+                        </svg>
+                    </div>
+                    <span id="celebrationTextSpan" class="celebration-banner-text" style="font-size: 28px; font-weight: 800;">${bannerText}</span>
+                `;
+
+                // Instantly dismiss on click
+                celebrateBanner.onclick = function() {
+                    if (celebrationTimeoutId) {
+                        clearTimeout(celebrationTimeoutId);
+                        celebrationTimeoutId = null;
+                    }
+                    celebrateBanner.style.opacity = "0";
+                    celebrateBanner.style.transform = "translate(-50%, -50%) scale(0.7)";
+                };
+                document.body.appendChild(celebrateBanner);
+            } else {
+                const textSpan = document.getElementById("celebrationTextSpan");
+                if (textSpan) textSpan.innerText = bannerText;
+
+                // Re-trigger tick path animation if banner already exists
+                const tickPath = celebrateBanner.querySelector('.animate-tick-path');
+                if (tickPath) {
+                    tickPath.style.animation = 'none';
+                    void tickPath.offsetHeight;
+                    tickPath.style.animation = 'drawCheckTick 0.7s cubic-bezier(0.25, 1, 0.5, 1) 0.1s forwards';
+                }
+            }
+
+            // Animate banner entry starting at the center of screen
+            requestAnimationFrame(() => {
+                celebrateBanner.style.opacity = "1";
+                celebrateBanner.style.transform = "translate(-50%, -50%) scale(1)";
+            });
+
+            // Schedule clean dismiss timer (1.8 seconds)
+            celebrationTimeoutId = setTimeout(() => {
+                celebrateBanner.style.opacity = "0";
+                celebrateBanner.style.transform = "translate(-50%, -50%) scale(0.7)";
+            }, 1800);
+        }
+
+        function deriveShippingStatus(colG, colH) {
+            const g = (colG || "").toLowerCase().trim();
+            const h = (colH || "").toLowerCase().trim();
+
+            if (!g || !h || g === "missing" || h === "missing") return "Incomplete Data";
+
+            if (g === "ship confirm pending" && h === "ship confirm pending") {
+                return "Completed (Scan Done)";
+            }
+
+            if (g === "picking pending" && h === "picking pending") {
+                return "Pending Confirm";
+            }
+
+            if ((g === "ship confirm pending" && h === "picking pending") || 
+                (g === "picking pending" && h === "ship confirm pending")) {
+                return "In Process";
+            }
+
+            return "Incomplete Data";
+        }
+
+        function populateTruckAndHubDropdowns(records) {
+            const truckSelect = document.getElementById("truckFilter");
+            const hubSelect = document.getElementById("hubFilter");
+            if (!truckSelect || !hubSelect) return;
+
+            const currentTruck = truckSelect.value || "ALL";
+            const currentHub = hubSelect.value || "ALL";
+
+            const trucks = new Set();
+            const hubs = new Set();
+
+            records.forEach(r => {
+                if (r.truck && r.truck !== "N/A") trucks.add(String(r.truck));
+                if (r.hub && r.hub !== "N/A") hubs.add(String(r.hub));
+            });
+
+            // Rebuild Truck dropdown while preserving current selection
+            if (truckSelect.children.length <= 1 || truckSelect.options.length !== (trucks.size + 1)) {
+                truckSelect.innerHTML = '<option value="ALL">All Trucks</option>';
+                Array.from(trucks).sort((a, b) => a.localeCompare(b, undefined, {numeric: true})).forEach(t => {
+                    const opt = document.createElement("option");
+                    opt.value = t;
+                    opt.textContent = "Truck " + t;
+                    if (t === currentTruck) opt.selected = true;
+                    truckSelect.appendChild(opt);
+                });
+            }
+
+            // Rebuild Hub dropdown while preserving current selection
+            if (hubSelect.children.length <= 1 || hubSelect.options.length !== (hubs.size + 1)) {
+                hubSelect.innerHTML = '<option value="ALL">All Hubs</option>';
+                Array.from(hubs).sort().forEach(h => {
+                    const opt = document.createElement("option");
+                    opt.value = h;
+                    opt.textContent = h;
+                    if (h === currentHub) opt.selected = true;
+                    hubSelect.appendChild(opt);
+                });
+            }
+        }
+
+        function applyInsightFilter() {
+            const SelectedType = document.getElementById("typeFilter").value;
+            const SelectedTruck = document.getElementById("truckFilter") ? document.getElementById("truckFilter").value : "ALL";
+            const SelectedHub = document.getElementById("hubFilter") ? document.getElementById("hubFilter").value : "ALL";
+            const SearchTerm = document.getElementById("insightSearch").value.toLowerCase().trim();
+
+            const DoSummaryList = JSON.parse(localStorage.getItem("LastUploadedDoSummary")) || [];
+            const SummaryDoMap = new Map(DoSummaryList.map(item => [item.inv, item]));
+            const MasterLookup = JSON.parse(localStorage.getItem("LastUploadedRouteData")) || {};
+
+            const EnrichedRecords = RawPayload.map(item => {
+                let resolvedAddr = item.addr;
+                if (SummaryDoMap.has(item.inv)) {
+                    const sItem = SummaryDoMap.get(item.inv);
+                    const combined = [sItem.route, sItem.name].filter(Boolean).join(" - ");
+                    if (combined) resolvedAddr = combined;
+                }
+                const routeMatch = MasterLookup[item.inv] || {};
+                const truckVal = (item.truck && item.truck !== "N/A") ? item.truck : (routeMatch.truck || "N/A");
+                const hubVal = (item.hub && item.hub !== "N/A") ? item.hub : (routeMatch.hub || "N/A");
+
+                return {
+                    ...item,
+                    addr: resolvedAddr,
+                    truck: truckVal,
+                    hub: hubVal,
+                    status: deriveShippingStatus(item.colG, item.colH)
+                };
+            });
+
+            // Dynamically populate Truck and Hub dropdown options
+            populateTruckAndHubDropdowns(EnrichedRecords);
+
+            // One-time restore of saved filter state after dropdown options are rebuilt
+            if (pendingStateRestore) {
+                pendingStateRestore = false;
+                restoreInsightFilterState();
+                applyInsightFilter();
+                return;
+            }
+
+            const Filtered = EnrichedRecords.filter(item => {
+                let MatchType = false;
+                if (SelectedType === "ALL") {
+                    MatchType = true;
+                } else if (SelectedType === "IN_PROCESS") {
+                    MatchType = item.status.includes("Process");
+                } else if (SelectedType === "PENDING") {
+                    MatchType = (item.doType === "PENDING" || item.status.includes("Pending"));
+                } else {
+                    MatchType = (item.doType === SelectedType);
+                }
+
+                const MatchTruck = (SelectedTruck === "ALL") || (String(item.truck) === String(SelectedTruck));
+                const MatchHub = (SelectedHub === "ALL") || (String(item.hub) === String(SelectedHub));
+
+                const MatchSearch = !SearchTerm || 
+                    item.inv.toLowerCase().includes(SearchTerm) || 
+                    item.status.toLowerCase().includes(SearchTerm) ||
+                    (item.addr && item.addr.toLowerCase().includes(SearchTerm)) ||
+                    (item.truck && String(item.truck).toLowerCase().includes(SearchTerm)) ||
+                    (item.hub && String(item.hub).toLowerCase().includes(SearchTerm));
+
+                return MatchType && MatchTruck && MatchHub && MatchSearch;
+            });
+
+            // Calculate Official Status Counts (Excluding UNMATCHED DOs entirely from KPIs)
+            let OfficialTotalCount = 0;
+            let OfficialCompletedCount = 0;
+            let InProcessCount = 0;
+            let PendingCount = 0;
+
+            Filtered.forEach(item => {
+                // Ignore UNMATCHED DOs for all official KPI tallies
+                if (item.doType !== "UNMATCHED DO") {
+                    OfficialTotalCount++;
+
+                    if (item.status.includes("Completed")) {
+                        OfficialCompletedCount++;
+                    } else if (item.status.includes("Process")) {
+                        InProcessCount++;
+                    } else if (item.status.includes("Pending")) {
+                        PendingCount++;
+                    }
+                }
+            });
+
+            // Update KPI Cards and Percentages using ONLY Official DOs
+            document.getElementById("kpi-total").innerText = OfficialTotalCount;
+            
+            document.getElementById("kpi-completed").innerText = OfficialCompletedCount;
+            document.getElementById("pct-completed").innerText = OfficialTotalCount > 0 
+                ? ((OfficialCompletedCount / OfficialTotalCount)*100).toFixed(1) + "%" : "0%";
+                
+            document.getElementById("kpi-process").innerText = InProcessCount;
+            document.getElementById("pct-process").innerText = OfficialTotalCount > 0 
+                ? ((InProcessCount / OfficialTotalCount)*100).toFixed(1) + "%" : "0%";
+                
+            document.getElementById("kpi-pending").innerText = PendingCount;
+            document.getElementById("pct-pending").innerText = OfficialTotalCount > 0 
+                ? ((PendingCount / OfficialTotalCount)*100).toFixed(1) + "%" : "0%";
+
+            // === Mini Summary Strip: Unmatched + Category counts (MIX rolls into Big & Small, matching gauge logic) ===
+            const UnmatchedCount = Filtered.filter(item => item.doType === "UNMATCHED DO").length;
+            const BigCount = Filtered.filter(item => item.doType === "BIG" || item.doType === "MIX").length;
+            const SmallCount = Filtered.filter(item => item.doType === "SMALL" || item.doType === "MIX").length;
+            const MixCount = Filtered.filter(item => item.doType === "MIX").length;
+
+            document.getElementById("sum-unmatched").innerText = UnmatchedCount;
+            document.getElementById("cat-big").innerText = BigCount;
+            document.getElementById("cat-small").innerText = SmallCount;
+            document.getElementById("cat-mix").innerText = MixCount;
+
+            const tbody = document.getElementById("insightTableBody");
+            tbody.innerHTML = "";
+
+            if (Filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:32px; color:#64748b;">No matching status records found.</td></tr>';
+            } else {
+                Filtered.forEach(r => {
+                    let badgeCls = "badge-incomplete";
+                    if (r.status.includes("Completed")) badgeCls = "badge-completed";
+                    else if (r.status.includes("Process")) badgeCls = "badge-process";
+                    else if (r.status.includes("Pending")) badgeCls = "badge-pending";
+
+                    const DoTypeDisplay = (r.doType === "UNMATCHED DO") 
+                        ? `<span class="badge" style="background-color:#7c3aed !important; color:#ffffff !important; border:1px solid #a78bfa;">UNMATCHED DO</span>` 
+                        : `<strong>${r.doType}</strong>`;
+
+                    const tr = document.createElement("tr");
+                    tr.style.cursor = "context-menu";
+                    tr.title = "Right-click to inspect DO details in a new tab";
+                    tr.addEventListener("contextmenu", function(e) {
+                        e.preventDefault();
+                        openDoDetailsTab(r.inv);
+                    });
+
+                    tr.innerHTML = `<td><strong>${r.inv}</strong></td><td>${r.truck || "N/A"}</td><td>${r.hub || "N/A"}</td><td>${r.addr || "N/A"}</td><td><span class="badge ${badgeCls}">${r.status}</span></td><td>${DoTypeDisplay}</td>`;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            // Dynamic 3-stage gauge completion status color: 0-49% Red, 50-80% Yellow, 81-100% Green
+            function getDynamicGaugeColor(pct) {
+                if (pct <= 49) return '#ef4444'; // Red
+                if (pct <= 80) return '#f59e0b'; // Yellow / Amber
+                return '#10b981'; // Green
+            }
+
+            // Builds the chart once, then on every later call snaps it to 0 (no animation)
+            // and immediately animates back up to the real values on the next frame.
+            function buildProgressDoughnut(canvasId, chartObj, completedCount, totalCount, activeColor, pctTextId) {
+                const safeRemaining = totalCount === 0 ? 1 : Math.max(0, totalCount - completedCount);
+                const pct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+                const dynamicGaugeColor = getDynamicGaugeColor(pct);
+                const isLight = isLightTheme();
+                const trackColor = isLight ? '#e2e8f0' : '#1e293b';
+
+                document.getElementById(pctTextId).innerText = pct + "% Complete (" + completedCount + "/" + totalCount + ")";
+
+                const finalData = [completedCount, safeRemaining];
+
+                if (!chartObj) {
+                    return new Chart(document.getElementById(canvasId), {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Completed', 'Remaining'],
+                            datasets: [{
+                                data: finalData,
+                                backgroundColor: [dynamicGaugeColor, trackColor],
+                                borderWidth: 0
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            cutout: '72%',
+                            animation: {
+                                duration: 1600,
+                                animateRotate: true,
+                                animateScale: true,
+                                easing: 'easeOutBack'
+                            },
+                            plugins: { legend: { display: false }, tooltip: { enabled: true } }
+                        }
+                    });
+                }
+
+                chartObj.data.datasets[0].backgroundColor = [dynamicGaugeColor, trackColor];
+                chartObj.data.datasets[0].data = [0, (finalData[0] + finalData[1]) || 1];
+                chartObj.update('none');
+
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        chartObj.data.datasets[0].data = finalData;
+                        chartObj.update();
+                    });
+                });
+
+                return chartObj;
+            }
+
+            // compute metrics from the FILTERED set so charts actually reflect the DO type filter
+            const TypeMetrics = {
+                BIG: { total: 0, completed: 0 },
+                SMALL: { total: 0, completed: 0 },
+                MIX: { total: 0, completed: 0 }
+            };
+
+            let TotalAllDos = 0;
+            let TotalAllCompleted = 0;
+
+            Filtered.forEach(item => {
+                if (item.doType !== "UNMATCHED DO") {
+                    TotalAllDos++;
+                    const isDone = item.status.includes("Completed");
+                    if (isDone) TotalAllCompleted++;
+
+                    if (TypeMetrics[item.doType]) {
+                        TypeMetrics[item.doType].total++;
+                        if (isDone) TypeMetrics[item.doType].completed++;
+                    }
+                }
+            });
+
+            const OverallPct = TotalAllDos > 0 ? Math.round((TotalAllCompleted / TotalAllDos) * 100) : 0;
+            const overallGaugeColor = getDynamicGaugeColor(OverallPct);
+            const isLightMode = isLightTheme();
+            const overallTrackColor = isLightMode ? '#e2e8f0' : '#1e293b';
+
+            document.getElementById("overallMeterText").innerText = OverallPct + "% (" + TotalAllCompleted + "/" + TotalAllDos + ")";
+
+            const currentFilterKey = `T:${SelectedType}_TR:${SelectedTruck}_H:${SelectedHub}_S:${SearchTerm}`;
+
+            // Trigger celebration banner when current filter context reaches 100% completion
+            if (TotalAllDos > 0 && OverallPct === 100) {
+                if (LastCelebratedKey !== currentFilterKey) {
+                    LastCelebratedKey = currentFilterKey;
+                    let contextMsg = "ALL DO COMPLETE SCAN";
+                    if (SelectedTruck !== "ALL") {
+                        contextMsg = `TRUCK ${SelectedTruck}: ALL DO COMPLETE SCAN`;
+                    } else if (SelectedHub !== "ALL") {
+                        contextMsg = `${SelectedHub}: ALL DO COMPLETE SCAN`;
+                    }
+                    trigger100PctCelebration(contextMsg);
+                }
+            } else {
+                LastCelebratedKey = null;
+            }
+
+            const safeOverallRemaining = TotalAllDos === 0 ? 1 : Math.max(0, TotalAllDos - TotalAllCompleted);
+
+            const overallFinalData = [TotalAllCompleted, safeOverallRemaining];
+
+            if (!OverallMeterObj) {
+                OverallMeterObj = new Chart(document.getElementById('overallMeterChart'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Completed', 'Remaining'],
+                        datasets: [{
+                            data: overallFinalData,
+                            backgroundColor: [overallGaugeColor, overallTrackColor],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        circumference: 180,
+                        rotation: 270,
+                        cutout: '75%',
+                        animation: {
+                            duration: 2000,
+                            animateRotate: true,
+                            animateScale: true,
+                            easing: 'easeOutQuart'
+                        },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            } else {
+                OverallMeterObj.data.datasets[0].backgroundColor = [overallGaugeColor, overallTrackColor];
+                OverallMeterObj.data.datasets[0].data = [0, (overallFinalData[0] + overallFinalData[1]) || 1];
+                OverallMeterObj.update('none');
+
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        OverallMeterObj.data.datasets[0].data = overallFinalData;
+                        OverallMeterObj.update();
+                    });
+                });
+            }
+
+            // === REVISED LOGIC BELOW: MIX DO totals included into BIG and SMALL Doughnuts ===
+            const BigPendingLeft = (TypeMetrics.BIG.total + TypeMetrics.MIX.total) - (TypeMetrics.BIG.completed + TypeMetrics.MIX.completed);
+            const SmallPendingLeft = (TypeMetrics.SMALL.total + TypeMetrics.MIX.total) - (TypeMetrics.SMALL.completed + TypeMetrics.MIX.completed);
+            document.getElementById("bigPendingText").innerText = BigPendingLeft + " DO Pending Left";
+            document.getElementById("smallPendingText").innerText = SmallPendingLeft + " DO Pending Left";
+
+            BigTypeChartObj = buildProgressDoughnut('bigTypeChart', BigTypeChartObj, TypeMetrics.BIG.completed + TypeMetrics.MIX.completed, TypeMetrics.BIG.total + TypeMetrics.MIX.total, '#8b5cf6', 'bigPctText');
+            SmallTypeChartObj = buildProgressDoughnut('smallTypeChart', SmallTypeChartObj, TypeMetrics.SMALL.completed + TypeMetrics.MIX.completed, TypeMetrics.SMALL.total + TypeMetrics.MIX.total, '#3b82f6', 'smallPctText');
+            MixTypeChartObj = buildProgressDoughnut('mixTypeChart', MixTypeChartObj, TypeMetrics.MIX.completed, TypeMetrics.MIX.total, '#f59e0b', 'mixPctText');
+        }
+
+        window.onload = function() {
+            if (typeof initTheme === 'function') initTheme();
+            if (typeof updateMemoryBadge === 'function') updateMemoryBadge();
+            restoreInsightFilterState(); // Restore static type filter + search box before first render
+            setTimeout(applyInsightFilter, 150);
+        };
+    </script>
+</body>
+</html>
