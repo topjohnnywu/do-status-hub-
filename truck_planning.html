@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Summary List & Truck Planning</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- AMOLED Left Sidebar Navigation -->
+        <div class="sidebar">
+            <div>
+                <div class="sidebar-brand">
+                    <svg class="animate-truck-loop" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="1" y="3" width="15" height="13"/>
+                        <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+                        <circle cx="5.5" cy="18.5" r="2.5"/>
+                        <circle cx="18.5" cy="18.5" r="2.5"/>
+                    </svg>
+                    <div>
+                        <div class="sidebar-brand-title">DO Status Hub</div>
+                        <div class="sidebar-brand-subtitle">Analytics & Scanning</div>
+                    </div>
+                </div>
+
+                <ul class="sidebar-nav">
+                    <li>
+                        <a href="index.html" class="sidebar-nav-item">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="7" height="9"/>
+                                <rect x="14" y="3" width="7" height="5"/>
+                                <rect x="14" y="12" width="7" height="9"/>
+                                <rect x="3" y="16" width="7" height="5"/>
+                            </svg>
+                            <span>Summary Analytics</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="shipping_insight.html" class="sidebar-nav-item">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="20" x2="18" y2="10"/>
+                                <line x1="12" y1="20" x2="12" y2="4"/>
+                                <line x1="6" y1="20" x2="6" y2="14"/>
+                            </svg>
+                            <span>Shipping Insight</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="do_details.html" class="sidebar-nav-item">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                <line x1="16" y1="13" x2="8" y2="13"/>
+                                <line x1="16" y1="17" x2="8" y2="17"/>
+                            </svg>
+                            <span>DO Details Inspector</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="truck_planning.html" class="sidebar-nav-item active">
+                            <svg class="animate-truck-loop" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="1" y="3" width="15" height="13"/>
+                                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+                                <circle cx="5.5" cy="18.5" r="2.5"/>
+                                <circle cx="18.5" cy="18.5" r="2.5"/>
+                            </svg>
+                            <span>Truck Planning</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="batch_analytics.html" class="sidebar-nav-item">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                                <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                                <line x1="12" y1="22.08" x2="12" y2="12"/>
+                            </svg>
+                            <span>Batch Analytics</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="do_summary_generator.html" class="sidebar-nav-item">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                <line x1="12" y1="18" x2="12" y2="12"/>
+                                <line x1="9" y1="15" x2="15" y2="15"/>
+                            </svg>
+                            <span>DO Summary Generator</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="challenger_list.html" class="sidebar-nav-item">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 11l3 3L22 4"/>
+                                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                            </svg>
+                            <span>Challenger List</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="do_activity_trend.html" class="sidebar-nav-item">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M2 20h20"/>
+                                <path d="M4 20v-6"/>
+                                <path d="M9 20V10"/>
+                                <path d="M14 20V6"/>
+                                <path d="M19 20V2"/>
+                            </svg>
+                            <span>DO Activity Trend</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div style="padding: 12px; border-top: 1px solid #18181b; font-size: 11px; color: #71717a; text-align: center;">
+                DO Status System v2.4
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- Header Banner Section -->
+            <div class="header">
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <div style="color: #10b981; display: flex; align-items: center;">
+                        <svg class="animate-truck-loop" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="1" y="3" width="15" height="13"/>
+                            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+                            <circle cx="5.5" cy="18.5" r="2.5"/>
+                            <circle cx="18.5" cy="18.5" r="2.5"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 style="font-size: 20px; margin: 0;">DAILY SUMMARY LIST</h1>
+                        <p style="font-size: 12px; color: #a1a1aa; margin-top: 4px;">
+                            Date: <strong id="currentDateDisplay" style="color: #3b82f6;">-</strong>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Action Buttons matching Excel toolbar -->
+                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                    <button onclick="clearAllFilters()" style="background-color: var(--btn-danger-bg, #dc2626); color: var(--btn-danger-fg, #ffffff); border: none; padding: 8px 16px; border-radius: 6px; font-weight: 700; cursor: pointer;">
+                        CLEAR FILTER
+                    </button>
+                    <button id="themeToggleBtn" onclick="toggleTheme()">Mode: Dark</button>
+                </div>
+            </div>
+
+            <!-- Executive KPI Metric Cards with Vector Icons -->
+            <div class="kpi-container">
+                <div class="kpi-card">
+                    <div class="kpi-card-header">
+                        <div class="title">Total Selected DOs</div>
+                        <div class="kpi-icon" style="color: #3b82f6;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                        </div>
+                    </div>
+                    <div class="value" id="kpiTotalDos">0</div>
+                </div>
+
+                <div class="kpi-card green">
+                    <div class="kpi-card-header">
+                        <div class="title">Total Product Models</div>
+                        <div class="kpi-icon" style="color: #10b981;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="21 16 8 21 3 16 3 8 8 3 21 8 21 16"/><polyline points="3 8 8 13 21 8"/></svg>
+                        </div>
+                    </div>
+                    <div class="value" id="kpiTotalModels">0</div>
+                </div>
+
+                <div class="kpi-card purple">
+                    <div class="kpi-card-header">
+                        <div class="title">Total Quantity (Pcs)</div>
+                        <div class="kpi-icon" style="color: #8b5cf6;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                        </div>
+                    </div>
+                    <div class="value" id="kpiTotalQty">0</div>
+                </div>
+
+                <div class="kpi-card orange">
+                    <div class="kpi-card-header">
+                        <div class="title">Total Volume (m³)</div>
+                        <div class="kpi-icon" style="color: #f59e0b;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                        </div>
+                    </div>
+                    <div class="value" id="kpiTotalM3">0.00 m³</div>
+                </div>
+            </div>
+
+            <!-- Two-Column Layout: Table (73%) + Slicer Panel (27%) -->
+            <div style="display: flex; gap: 20px; align-items: flex-start;">
+                
+                <!-- Main Manifest Table Panel -->
+                <div class="table-card" style="flex: 1; margin-bottom: 0;">
+                    <div class="table-toolbar">
+                        <h3>Daily Summary Manifest</h3>
+                        <input type="text" id="truckSearchInput" class="search-box" placeholder="Search Truck, DO, Model, Consignee..." onkeyup="renderTruckPlanningDashboard()">
+                    </div>
+
+                    <!-- Manifest Header: shown only when Truck + Hub slicer filters are active -->
+                    <div id="truckManifestHeader" class="manifest-header" style="display:none;">
+                        <div><span class="manifest-label">TRUCK:</span><span id="manifestTruck" class="manifest-value">-</span></div>
+                        <div><span class="manifest-label">HUB:</span><span id="manifestHub" class="manifest-value">-</span></div>
+                        <div><span class="manifest-label">CONSIGNEE:</span><span id="manifestConsignee" class="manifest-value">-</span></div>
+                        <div><span class="manifest-label">ROUTE:</span><span id="manifestRoute" class="manifest-value">-</span></div>
+                    </div>
+
+                    <div class="compact-wrapper">
+                        <table class="compact-table">
+                            <thead>
+                                <tr id="truckPlanningTableHeadRow">
+                                    <th>Truck</th>
+                                    <th>Hub</th>
+                                    <th>Route</th>
+                                    <th>Consignee</th>
+                                    <th>DO Number</th>
+                                    <th>Type</th>
+                                    <th>Product Code</th>
+                                    <th>Model Name</th>
+                                    <th class="number-col">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="truckPlanningTableBody">
+                                <tr><td colspan="9" style="text-align:center; padding:24px; color:#71717a;">Loading summary manifest data...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Right Side Slicers Panel (Replicates Excel Slicers) -->
+                <div style="width: 320px; flex-shrink: 0;">
+                    
+                    <!-- Truck Slicer -->
+                    <div class="slicer-card">
+                        <div class="slicer-title">
+                            <span>Truck</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                        </div>
+                        <div id="truckSlicerGrid" class="slicer-grid"></div>
+                    </div>
+
+                    <!-- Type Slicer -->
+                    <div class="slicer-card">
+                        <div class="slicer-title">
+                            <span>Type</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                        </div>
+                        <div id="typeSlicerGrid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
+                            <button class="slicer-btn active" data-type="ALL" onclick="setTypeFilter('ALL')">All Types</button>
+                            <button class="slicer-btn" data-type="Small" onclick="setTypeFilter('Small')">Small</button>
+                            <button class="slicer-btn" data-type="Big" onclick="setTypeFilter('Big')">Big</button>
+                            <button class="slicer-btn" data-type="Mix" onclick="setTypeFilter('Mix')">Mix</button>
+                        </div>
+                    </div>
+
+                    <!-- Hub Slicer -->
+                    <div class="slicer-card">
+                        <div class="slicer-title">
+                            <span>Hub</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                        </div>
+                        <div id="hubSlicerGrid" class="slicer-grid"></div>
+                    </div>
+
+                    <!-- Category Slicer -->
+                    <div class="slicer-card">
+                        <div class="slicer-title">
+                            <span>Category</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                        </div>
+                        <div id="categorySlicerGrid" class="slicer-grid" style="max-height: 260px;"></div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div> <!-- End .main-content -->
+    </div> <!-- End .app-container -->
+
+    <script src="js/charts.js"></script>
+    <script src="js/truck_planning.js"></script>
+</body>
+</html>
