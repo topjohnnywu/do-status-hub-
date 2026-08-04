@@ -281,18 +281,21 @@
             <div class="file-upload-box">
                 <label for="filePicker">DO Summary File(s):</label>
                 <input type="file" id="filePicker" accept=".xlsx, .xls, .xlsm" multiple onchange="handleFileUpload(event)">
+                <button type="button" class="reset-file-btn" onclick="resetSpecificFile('do')" title="Clear DO Summary File">✕</button>
             </div>
 
             <!-- 2. Batch Picking / Source File Upload -->
             <div class="file-upload-box">
                 <label for="productMasterPicker">Batch Picking File (.xlsm):</label>
                 <input type="file" id="productMasterPicker" accept=".csv, .xlsx, .xls, .xlsm" multiple onchange="handleProductMasterUpload(event)">
+                <button type="button" class="reset-file-btn" onclick="resetSpecificFile('batch')" title="Clear Batch Picking File">✕</button>
             </div>
 
             <!-- 3. Shipping Insight File Upload -->
             <div class="file-upload-box">
                 <label for="shippingInsightPicker">Shipping Insight File (.xlsx):</label>
                 <input type="file" id="shippingInsightPicker" accept=".xlsx, .xls, .xlsm" onchange="handleShippingInsightUpload(event)">
+                <button type="button" class="reset-file-btn" onclick="resetSpecificFile('shipping')" title="Clear Shipping Insight File">✕</button>
             </div>
 
             <!-- Dashboard Active View & Action Buttons -->

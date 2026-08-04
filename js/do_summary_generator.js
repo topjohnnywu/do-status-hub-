@@ -86,16 +86,8 @@ class DOSummaryGenerator {
         const dataBuffer = await file.arrayBuffer();
         const workbook = XLSX.read(dataBuffer, { type: 'array' });
 
-        // FIX 1: Sheet Target - Try finding "final summary", else FALLBACK TO SHEET 1 (Matches VBA: Set wsSource = wbSource.Sheets(1))
-        let sheetName = workbook.SheetNames.find(name => {
-            const lower = name.toLowerCase().trim();
-            return lower.includes("final summary") || lower.includes("final");
-        });
-
-        if (!sheetName) {
-            sheetName = workbook.SheetNames[0]; // Take 1st sheet automatically
-        }
-
+        // Target Sheet: Take the first sheet directly (Matches VBA: Set wsSource = wbSource.Sheets(1))
+        const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
         const rawRows = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: false });
 
@@ -856,22 +848,47 @@ class DOSummaryGenerator {
         alert("Email text copied to clipboard:\n\n" + emailText);
     }
 
-    renderKPIs() {
+    renderKPIs(customRecords = null) {
         let totalBatches = this.batches.length;
         let totalDO = 0;
         let totalVol = 0;
         let totalQty = 0;
         let totalSku = 0;
+        let isFiltered = false;
 
-        this.batches.forEach(b => {
-            const activeRecs = b.records.filter(r => r.selected === true);
-            totalDO += activeRecs.length;
-            activeRecs.forEach(r => {
-                totalVol += r.volume;
-                totalQty += r.qty;
-                totalSku += r.sku;
+        if (customRecords !== null) {
+            isFiltered = true;
+            const recs = customRecords.filter(r => r.selected !== false);
+            totalDO = recs.length;
+            recs.forEach(r => {
+                totalVol += (r.volume || 0);
+                totalQty += (r.qty || 0);
+                totalSku += (r.sku || 0);
             });
-        });
+        } else if (this.searchQuery && this.batches[this.currentBatchIndex]) {
+            isFiltered = true;
+            const activeBatch = this.batches[this.currentBatchIndex];
+            const recs = activeBatch.records.filter(r => {
+                const searchStr = `${r.invoiceNo} ${r.division} ${r.shpCode} ${r.route} ${r.consignee} ${r.addr1} ${r.addr2} ${r.addr3} ${r.remark}`.toLowerCase();
+                return searchStr.includes(this.searchQuery) && r.selected !== false;
+            });
+            totalDO = recs.length;
+            recs.forEach(r => {
+                totalVol += (r.volume || 0);
+                totalQty += (r.qty || 0);
+                totalSku += (r.sku || 0);
+            });
+        } else {
+            this.batches.forEach(b => {
+                const activeRecs = b.records.filter(r => r.selected !== false);
+                totalDO += activeRecs.length;
+                activeRecs.forEach(r => {
+                    totalVol += (r.volume || 0);
+                    totalQty += (r.qty || 0);
+                    totalSku += (r.sku || 0);
+                });
+            });
+        }
 
         const elBatches = document.getElementById("gen-kpi-batches");
         const elDO = document.getElementById("gen-kpi-do");
@@ -884,6 +901,23 @@ class DOSummaryGenerator {
         if (elVol) elVol.innerText = `${totalVol.toFixed(2)} m³`;
         if (elQty) elQty.innerText = totalQty.toLocaleString();
         if (elSku) elSku.innerText = totalSku.toLocaleString();
+
+        // Update sub-labels dynamically when filtered
+        const cardDO = elDO?.closest(".kpi-card");
+        const subDO = cardDO?.querySelector(".kpi-sub");
+        if (subDO) subDO.innerText = isFiltered ? "Filtered Orders" : "Parsed Orders";
+
+        const cardVol = elVol?.closest(".kpi-card");
+        const subVol = cardVol?.querySelector(".kpi-sub");
+        if (subVol) subVol.innerText = isFiltered ? "Filtered Volume" : "Cubic Meters";
+
+        const cardQty = elQty?.closest(".kpi-card");
+        const subQty = cardQty?.querySelector(".kpi-sub");
+        if (subQty) subQty.innerText = isFiltered ? "Filtered Qty" : "Units Shipped";
+
+        const cardSku = elSku?.closest(".kpi-card");
+        const subSku = cardSku?.querySelector(".kpi-sub");
+        if (subSku) subSku.innerText = isFiltered ? "Filtered SKU" : "Unique Products";
     }
 
     renderBatchTabs() {
@@ -1017,6 +1051,51 @@ class DOSummaryGenerator {
         }
     }
 
+    toggleRemarksPanel() {
+        const panel = document.getElementById("quickRemarksPanel");
+        const btn = document.getElementById("remarksToggleBtn");
+        if (!panel) return;
+
+        panel.classList.toggle("collapsed");
+        if (btn) {
+            btn.innerText = panel.classList.contains("collapsed") ? "▼ Expand" : "▲ Collapse";
+        }
+    }
+
+    applyQuickRemark(remarkText) {
+        if (this.batches.length === 0 || !this.batches[this.currentBatchIndex]) {
+            alert("[NOTICE] Please upload or create a batch first!");
+            return;
+        }
+
+        const activeBatch = this.batches[this.currentBatchIndex];
+        const selectedRecords = activeBatch.records.filter(r => r.selected === true);
+
+        if (selectedRecords.length === 0) {
+            alert("[INFO] Please check/select at least one DO row to apply this remark.");
+            return;
+        }
+
+        selectedRecords.forEach(r => {
+            r.remark = remarkText.trim();
+        });
+
+        this.saveToStorage();
+        this.renderTable();
+    }
+
+    applyCustomBulkRemark() {
+        const input = document.getElementById("customBulkRemarkInput");
+        if (!input) return;
+        const val = input.value.trim();
+        if (!val) {
+            alert("[INFO] Please enter a remark text in the box first.");
+            return;
+        }
+        this.applyQuickRemark(val);
+        input.value = "";
+    }
+
     updateRoute(batchIdx, recordIdx, val) {
         if (this.batches[batchIdx] && this.batches[batchIdx].records[recordIdx]) {
             const cleanVal = val.trim().toUpperCase();
@@ -1086,6 +1165,9 @@ class DOSummaryGenerator {
             }
             filteredRecords.push({ record: r, idx: originalIdx });
         });
+
+        // Dynamic KPI update based on current filter state
+        this.renderKPIs(this.searchQuery ? filteredRecords.map(item => item.record) : null);
 
         if (elSearchCount) {
             elSearchCount.style.display = "inline-block";

@@ -1,4 +1,4 @@
-// Update memory status badge with clean chip pills (file names only)
+// Update memory status badge with clean chip pills and individual ✕ remove buttons
 function updateMemoryBadge() {
     const BadgeElement = document.getElementById("memoryStatusBadge");
     if (!BadgeElement) return;
@@ -15,16 +15,55 @@ function updateMemoryBadge() {
     let html = "";
 
     if (SavedDoName) {
-        html += `<span class="file-chip green">${SavedDoName}</span>`;
+        html += `<span class="file-chip green" title="DO Summary File: ${SavedDoName}">📄 ${SavedDoName} <button type="button" class="chip-remove-btn" onclick="resetSpecificFile('do')" title="Remove DO Summary File">✕</button></span>`;
     }
     if (SavedRouteName) {
-        html += `<span class="file-chip blue">${SavedRouteName}</span>`;
+        html += `<span class="file-chip blue" title="Batch Picking File: ${SavedRouteName}">📦 ${SavedRouteName} <button type="button" class="chip-remove-btn" onclick="resetSpecificFile('batch')" title="Remove Batch Picking File">✕</button></span>`;
     }
     if (SavedInsightName) {
-        html += `<span class="file-chip purple">${SavedInsightName}</span>`;
+        html += `<span class="file-chip purple" title="Shipping Insight File: ${SavedInsightName}">🚚 ${SavedInsightName} <button type="button" class="chip-remove-btn" onclick="resetSpecificFile('shipping')" title="Remove Shipping Insight File">✕</button></span>`;
     }
 
     BadgeElement.innerHTML = html;
+}
+
+// Reset specific individual file data by file type ('do', 'batch', 'shipping')
+function resetSpecificFile(fileType) {
+    if (fileType === 'do' || fileType === 'dosummary') {
+        MasterFileStoreArray = [];
+        DataHoarderArray = [];
+        localStorage.removeItem("LastUploadedDoSummary");
+        localStorage.removeItem("LastDoSummaryFileName");
+
+        const filePicker = document.getElementById("filePicker");
+        if (filePicker) filePicker.value = "";
+
+        const fileSelector = document.getElementById("fileSelector");
+        if (fileSelector) {
+            fileSelector.innerHTML = '<option value="ALL">All Files Combined (0)</option>';
+        }
+
+        if (typeof refreshDashboard === 'function') refreshDashboard();
+    } else if (fileType === 'batch' || fileType === 'route' || fileType === 'productmaster') {
+        ProductMasterLookupMap = {};
+        localStorage.removeItem("LastUploadedRouteData");
+        localStorage.removeItem("LastRouteFileName");
+
+        const pmPicker = document.getElementById("productMasterPicker");
+        if (pmPicker) pmPicker.value = "";
+
+        if (typeof refreshDashboard === 'function') refreshDashboard();
+    } else if (fileType === 'shipping' || fileType === 'insight') {
+        localStorage.removeItem("ShippingInsightData");
+        localStorage.removeItem("LastShippingInsightFileName");
+
+        const siPicker = document.getElementById("shippingInsightPicker");
+        if (siPicker) siPicker.value = "";
+
+        if (typeof refreshDashboard === 'function') refreshDashboard();
+    }
+
+    if (typeof updateMemoryBadge === 'function') updateMemoryBadge();
 }
 
 // Smart Multi-File Excel Parser with Column L (Remarks) Extraction

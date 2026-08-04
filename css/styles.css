@@ -837,6 +837,94 @@ body::after {
     outline: none;
 }
 
+/* Individual File Chip Badge and Reset Button Styling */
+.memory-status-badge {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.file-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid var(--border);
+    background: var(--surface-solid);
+    color: var(--fg);
+    transition: all 0.2s ease;
+}
+
+.file-chip.green {
+    border-color: rgba(16, 185, 129, 0.4);
+    background: rgba(16, 185, 129, 0.12);
+    color: #10b981;
+}
+
+.file-chip.blue {
+    border-color: rgba(59, 130, 246, 0.4);
+    background: rgba(59, 130, 246, 0.12);
+    color: #3b82f6;
+}
+
+.file-chip.purple {
+    border-color: rgba(139, 92, 246, 0.4);
+    background: rgba(139, 92, 246, 0.12);
+    color: #8b5cf6;
+}
+
+.chip-remove-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.2);
+    color: currentColor;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    margin-left: 4px;
+    transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.chip-remove-btn:hover {
+    background: #ef4444;
+    color: #ffffff;
+    transform: scale(1.15);
+}
+
+.reset-file-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--fg-subtle);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-left: auto;
+    transition: all 0.15s ease;
+}
+
+.reset-file-btn:hover {
+    border-color: #ef4444;
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.15);
+}
+
 select {
     font-size: 13px;
     color: var(--fg);
@@ -906,6 +994,7 @@ select {
 }
 
 .kpi-card.green { border-left: 3px solid #10b981; }
+.kpi-card.cyan { border-left: 3px solid #06b6d4; }
 .kpi-card.purple { border-left: 3px solid #8b5cf6; }
 .kpi-card.orange, .kpi-card.yellow { border-left: 3px solid #f59e0b; }
 .kpi-card.red { border-left: 3px solid #ef4444; }
@@ -7442,6 +7531,144 @@ body.light-mode #themeToggleBtn {
 [data-theme="premium"] .file-chip.blue { border-color: var(--sem-blue-border); color: var(--sem-blue); background: var(--sem-blue-bg); }
 [data-theme="premium"] .file-chip.purple { border-color: var(--sem-purple-border); color: var(--sem-purple); background: var(--sem-purple-bg); }
 [data-theme="premium"] .file-chip.yellow { border-color: var(--sem-orange-border); color: var(--sem-orange); background: var(--sem-orange-bg); }
+
+/* Responsive 2-Column Grid Layout for DO Summary Generator */
+.generator-top-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+@media (min-width: 1024px) {
+    .generator-top-grid {
+        grid-template-columns: 1fr 340px;
+        align-items: start;
+    }
+}
+
+@media (min-width: 1400px) {
+    .generator-top-grid {
+        grid-template-columns: 1fr 380px;
+    }
+}
+
+.sticky-remarks-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: all 0.25s ease;
+}
+
+@media (min-width: 1024px) {
+    .sticky-remarks-card {
+        position: sticky;
+        top: 16px;
+        z-index: 20;
+    }
+}
+
+.sticky-remarks-card .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--surface-solid);
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+}
+
+.sticky-remarks-card .panel-header:hover {
+    background: var(--surface-hover, rgba(255, 255, 255, 0.04));
+}
+
+.sticky-remarks-card .panel-toggle-btn {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-glow);
+    border: 1px solid var(--border-accent);
+    padding: 2px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.sticky-remarks-card .panel-body {
+    padding: 14px 16px;
+    max-height: 480px;
+    overflow-y: auto;
+    transition: max-height 0.3s ease, opacity 0.2s ease, padding 0.3s ease;
+}
+
+.sticky-remarks-card.collapsed .panel-body {
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.section-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--fg-subtle);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.quick-preset-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.preset-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface-solid);
+    color: var(--fg);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.preset-chip:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.preset-chip.red { border-color: rgba(239, 68, 68, 0.4); color: #ef4444; background: rgba(239, 68, 68, 0.1); }
+.preset-chip.red:hover { background: #ef4444; color: #fff; }
+
+.preset-chip.yellow { border-color: rgba(245, 158, 11, 0.4); color: #f59e0b; background: rgba(245, 158, 11, 0.1); }
+.preset-chip.yellow:hover { background: #f59e0b; color: #fff; }
+
+.preset-chip.blue { border-color: rgba(59, 130, 246, 0.4); color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
+.preset-chip.blue:hover { background: #3b82f6; color: #fff; }
+
+.preset-chip.green { border-color: rgba(16, 185, 129, 0.4); color: #10b981; background: rgba(16, 185, 129, 0.1); }
+.preset-chip.green:hover { background: #10b981; color: #fff; }
+
+.preset-chip.purple { border-color: rgba(139, 92, 246, 0.4); color: #8b5cf6; background: rgba(139, 92, 246, 0.1); }
+.preset-chip.purple:hover { background: #8b5cf6; color: #fff; }
+
+.preset-chip.gray { border-color: rgba(156, 163, 175, 0.4); color: #9ca3af; background: rgba(156, 163, 175, 0.1); }
+.preset-chip.gray:hover { background: #9ca3af; color: #fff; }
+
+.preset-chip.dark { border-color: var(--border); color: var(--fg-subtle); background: transparent; }
+.preset-chip.dark:hover { background: rgba(239, 68, 68, 0.2); color: #ef4444; border-color: #ef4444; }
+
 [data-theme="premium"] .file-chip.red { border-color: var(--sem-red-border); color: var(--sem-red); background: var(--sem-red-bg); }
 
 [data-theme="premium"] .file-chip strong {

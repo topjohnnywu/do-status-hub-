@@ -215,7 +215,17 @@ function renderTruckPlanningDashboard() {
 
     // Calculate KPI Totals
     const uniqueDos = new Set(filteredRows.map(r => r.invRaw)).size;
-    const uniqueModels = new Set(filteredRows.map(r => r.productCode)).size;
+    const uniqueModels = new Set(filteredRows.map(r => r.modelName)).size;
+    
+    // Count distinct (DO, SKU) pairs so if 2 DOs contain the same SKU, it is counted as 2
+    const doSkuSet = new Set();
+    filteredRows.forEach(r => {
+        if (r.productCode && r.productCode !== '-') {
+            doSkuSet.add(`${r.invRaw}___${r.productCode}`);
+        }
+    });
+    const totalSkus = doSkuSet.size;
+
     const totalQty = filteredRows.reduce((sum, r) => sum + r.qty, 0);
 
     // Total m3 summed over UNIQUE DOs (vol is per-DO, repeats across item rows)
@@ -224,7 +234,10 @@ function renderTruckPlanningDashboard() {
     const totalM3 = Object.values(volByDo).reduce((sum, v) => sum + v, 0);
 
     document.getElementById("kpiTotalDos").innerText = uniqueDos.toLocaleString();
-    document.getElementById("kpiTotalModels").innerText = uniqueModels.toLocaleString();
+    const modelsKpi = document.getElementById("kpiTotalModels");
+    if (modelsKpi) modelsKpi.innerText = uniqueModels.toLocaleString();
+    const skuKpi = document.getElementById("kpiTotalSkus");
+    if (skuKpi) skuKpi.innerText = totalSkus.toLocaleString();
     document.getElementById("kpiTotalQty").innerText = totalQty.toLocaleString();
     const m3Kpi = document.getElementById("kpiTotalM3");
     if (m3Kpi) m3Kpi.innerText = totalM3.toFixed(2) + " m³";
