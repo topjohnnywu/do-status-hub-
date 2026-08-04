@@ -85,37 +85,40 @@ class DOSummaryGenerator {
 
         const dataBuffer = await file.arrayBuffer();
         const workbook = XLSX.read(dataBuffer, { type: 'array' });
-        const sheetName = workbook.SheetNames.find(name => {
+
+        // FIX 1: Sheet Target - Try finding "final summary", else FALLBACK TO SHEET 1 (Matches VBA: Set wsSource = wbSource.Sheets(1))
+        let sheetName = workbook.SheetNames.find(name => {
             const lower = name.toLowerCase().trim();
             return lower.includes("final summary") || lower.includes("final");
         });
+
         if (!sheetName) {
-            alert(`[ERROR] File "${fileName}" has no "Final Summary List" sheet. Skipped.`);
-            return;
+            sheetName = workbook.SheetNames[0]; // Take 1st sheet automatically
         }
+
         const sheet = workbook.Sheets[sheetName];
         const rawRows = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: false });
 
-        if (rawRows.length < 2) {
+        if (!rawRows || rawRows.length < 2) {
             alert(`[ERROR] File "${fileName}" has no data rows!`);
             return;
         }
 
-        // Parse Header & Map Column Indexes
+        // FIX 2: Header Map - Includes SONY CSV Aliases (SEQ, SHIP_TO, ZONE, CONSIGNEE_NAME1, TOTAL_ITEM)
         const headerRow = rawRows[0].map(h => String(h || "").trim().toUpperCase());
         
         const colMap = {
-            invoiceNo: this.findColIdx(headerRow, ["INVOICE NO.", "INVOICE", "INVOICE_NO", "DO NO", "DO_NUMBER"]),
+            invoiceNo: this.findColIdx(headerRow, ["INVOICE NO.", "INVOICE", "INVOICE_NO", "DO NO", "DO_NUMBER", "SEQ"]),
             division:  this.findColIdx(headerRow, ["DIVISION", "DIV"]),
-            shpCode:   this.findColIdx(headerRow, ["SHP_CODE", "SHP CODE", "SHIP CODE"]),
-            route:     this.findColIdx(headerRow, ["ROUTE"]),
-            consignee: this.findColIdx(headerRow, ["CONSIGNEE_NAME", "CONSIGNEE", "CUSTOMER"]),
+            shpCode:   this.findColIdx(headerRow, ["SHP_CODE", "SHP CODE", "SHIP CODE", "SHIP_TO", "SHIP TO"]),
+            route:     this.findColIdx(headerRow, ["ROUTE", "ZONE"]),
+            consignee: this.findColIdx(headerRow, ["CONSIGNEE_NAME", "CONSIGNEE", "CUSTOMER", "CONSIGNEE_NAME1", "CONSIGNEE NAME1", "CONSIGNEE NAME"]),
             addr1:     this.findColIdx(headerRow, ["ADDRESS1", "ADDRESS 1", "ADDR1"]),
             addr2:     this.findColIdx(headerRow, ["ADDRESS2", "ADDRESS 2", "ADDR2"]),
             addr3:     this.findColIdx(headerRow, ["ADDRESS3", "ADDRESS 3", "ADDR3"]),
             volume:    this.findColIdx(headerRow, ["VOLUME", "M3", "VOLUME (M3)"]),
             qty:       this.findColIdx(headerRow, ["QTY", "QUANTITY"]),
-            sku:       this.findColIdx(headerRow, ["TOTAL SKU", "SKU", "SKU COUNT"]),
+            sku:       this.findColIdx(headerRow, ["TOTAL SKU", "SKU", "SKU COUNT", "TOTAL_ITEM", "TOTAL ITEM"]),
             remark:    this.findColIdx(headerRow, ["REMARK", "REMARKS"])
         };
 
@@ -156,7 +159,7 @@ class DOSummaryGenerator {
                 volume: volVal,
                 qty: qtyVal,
                 sku: skuVal,
-                remark: "", // Ignore CSV Column L; leave blank for manual entry
+                remark: "", // Ignore CSV summary text; leave blank for manual entry
                 missingRoute: missingRoute,
                 missingVolume: missingVolume,
                 selected: true
@@ -176,7 +179,7 @@ class DOSummaryGenerator {
                   `\nMissing values have been flagged in red for review.`);
         }
 
-        // Duplicate Check against all existing batches in memory
+        // FIX 3: DUPLICATE CHECK ACROSS ALL ACTIVE BATCHES (VBA Logic)
         const existingMap = {};
         this.batches.forEach(b => {
             b.records.forEach(r => {
@@ -198,16 +201,38 @@ class DOSummaryGenerator {
         if (duplicateRecords.length > 0) {
             const sampleDupes = duplicateRecords.slice(0, 5).map(d => `${d.record.invoiceNo} (${d.foundIn})`).join("\n");
             const userChoice = prompt(
-                `Duplicate DO Detected!\n\n` +
+                `⚠️ DUPLICATE DO DETECTED!\n\n` +
                 `New DO Available: ${newRecords.length}\n` +
-                `Duplicate DO Found: ${duplicateRecords.length} (Skipped)\n\n` +
+                `Duplicate DO Found: ${duplicateRecords.length}\n\n` +
                 `Sample Duplicates:\n${sampleDupes}\n\n` +
                 `Choose Action:\n` +
                 `1 = Create New Batch with ONLY new DOs\n` +
-                `2 = Cancel Import`, "1"
+                `2 = Append new DOs to an existing Batch\n` +
+                `3 = Cancel Import`, "1"
             );
 
-            if (userChoice !== "1") {
+            if (userChoice === "1" || userChoice === null) {
+                // Continue creating new batch with newRecords
+            } else if (userChoice === "2") {
+                if (this.batches.length === 0) {
+                    alert("[WARNING] No existing batch found to append to. Creating a new batch instead.");
+                } else {
+                    const batchListStr = this.batches.map((b, i) => `${i + 1}. ${b.batchName}`).join("\n");
+                    const targetInput = prompt(`Choose destination batch:\n${batchListStr}\n\nEnter number:`, "1");
+                    const targetIdx = parseInt(targetInput) - 1;
+
+                    if (!isNaN(targetIdx) && this.batches[targetIdx]) {
+                        this.batches[targetIdx].records.push(...(newRecords.length > 0 ? newRecords : parsedRecords));
+                        this.saveToStorage();
+                        this.renderUI();
+                        alert(`[SUCCESS] Appended ${newRecords.length > 0 ? newRecords.length : parsedRecords.length} DO(s) to ${this.batches[targetIdx].batchName}!`);
+                        return; // Done
+                    } else {
+                        alert("[CANCELLED] Invalid batch selected. Import cancelled.");
+                        return;
+                    }
+                }
+            } else {
                 alert("[CANCELLED] Import cancelled by user.");
                 return;
             }
@@ -270,12 +295,12 @@ class DOSummaryGenerator {
             const sheet = workbook.Sheets[sheetName];
             const rawRows = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: false });
 
-            if (rawRows.length < 2) continue;
+            if (!rawRows || rawRows.length < 2) continue;
 
             const headerRow = rawRows[0].map(h => String(h || "").trim().toUpperCase());
             const colMap = {
-                invoiceNo: this.findColIdx(headerRow, ["INVOICE NO.", "INVOICE", "INVOICE_NO", "DO NO", "DO_NUMBER"]),
-                route:     this.findColIdx(headerRow, ["ROUTE"]),
+                invoiceNo: this.findColIdx(headerRow, ["INVOICE NO.", "INVOICE", "INVOICE_NO", "DO NO", "DO_NUMBER", "SEQ"]),
+                route:     this.findColIdx(headerRow, ["ROUTE", "ZONE"]),
                 volume:    this.findColIdx(headerRow, ["VOLUME", "M3", "VOLUME (M3)"])
             };
 
@@ -375,7 +400,6 @@ class DOSummaryGenerator {
         try {
             if (!allRecords || allRecords.length === 0) return;
 
-            // Extract date from target filename (ddmmyyyy) or stored date, else fallback automatically without prompt
             let dateStr = "";
             const nameMatch = (this.targetFileName || "").match(/(\d{2})(\d{2})(\d{4})/);
             if (nameMatch) {
@@ -385,30 +409,17 @@ class DOSummaryGenerator {
                 if (savedDate) {
                     dateStr = `${savedDate[3]}-${savedDate[2]}-${savedDate[1]}`;
                 } else {
-                    const localDate = (localStorage.getItem("DO_Summary_Generator_Date") || "").trim().match(/(\d{2})(\d{2})(\d{4})/);
-                    if (localDate) {
-                        dateStr = `${localDate[3]}-${localDate[2]}-${localDate[1]}`;
-                    } else {
-                        const localFile = (localStorage.getItem("DO_Summary_Generator_FileName") || "").trim().match(/(\d{2})(\d{2})(\d{4})/);
-                        if (localFile) {
-                            dateStr = `${localFile[3]}-${localFile[2]}-${localFile[1]}`;
-                        } else {
-                            // Automatic silent fallback to next-day delivery date (YYYY-MM-DD)
-                            const targetDate = new Date();
-                            targetDate.setDate(targetDate.getDate() + 1);
-                            const yyyy = targetDate.getFullYear();
-                            const mm = String(targetDate.getMonth() + 1).padStart(2, '0');
-                            const dd = String(targetDate.getDate()).padStart(2, '0');
-                            dateStr = `${yyyy}-${mm}-${dd}`;
-                        }
-                    }
+                    const targetDate = new Date();
+                    targetDate.setDate(targetDate.getDate() + 1);
+                    const yyyy = targetDate.getFullYear();
+                    const mm = String(targetDate.getMonth() + 1).padStart(2, '0');
+                    const dd = String(targetDate.getDate()).padStart(2, '0');
+                    dateStr = `${yyyy}-${mm}-${dd}`;
                 }
             }
             if (!dateStr) return;
 
-            // Compute main totals from selected records
             let doCount = 0, skuTotal = 0, volTotal = 0, qtyTotal = 0;
-            // LCL detection mirrors VBA: column L (remark) contains "LCL"
             let lclDo = 0, lclSku = 0, lclVol = 0, lclQty = 0;
 
             allRecords.forEach(r => {
@@ -424,7 +435,6 @@ class DOSummaryGenerator {
                 }
             });
 
-            // Upsert into shared activity history store
             let history = [];
             try {
                 history = JSON.parse(localStorage.getItem("DO_Activity_Trend_History")) || [];
@@ -457,7 +467,7 @@ class DOSummaryGenerator {
         }
     }
 
-    // Export complete Multi-Sheet Workbook with Native Save As File Picker
+    // Export complete Multi-Sheet Workbook
     async exportToExcel() {
         if (this.batches.length === 0) {
             alert("[WARNING] No batch data to export! Please upload source files first.");
@@ -466,7 +476,6 @@ class DOSummaryGenerator {
 
         const workbook = XLSX.utils.book_new();
 
-        // Style presets matching BatachSummary.bas & FinalSummary.bas
         const styleHeader = {
             font: { name: "Aptos Narrow", sz: 11, bold: true, color: { rgb: "FFFFFF" } },
             fill: { fgColor: { rgb: "E31B23" } },
@@ -479,12 +488,6 @@ class DOSummaryGenerator {
             alignment: { horizontal: "center", vertical: "center" }
         };
 
-        const styleFinalSummaryHeader = {
-            font: { name: "Aptos Narrow", sz: 13, bold: true, color: { rgb: "FFFFFF" } },
-            fill: { fgColor: { rgb: "107C41" } }, // Green background fill matching reference screenshot
-            alignment: { horizontal: "center", vertical: "center" }
-        };
-
         const styleBoldData = { font: { name: "Aptos Narrow", sz: 11, bold: true } };
         const styleNormalData = { font: { name: "Aptos Narrow", sz: 11, bold: false } };
 
@@ -494,12 +497,11 @@ class DOSummaryGenerator {
             alignment: { horizontal: "left", vertical: "center" }
         };
 
-        // 1. Add individual Batch sheets (from BatachSummary.bas)
+        // 1. Add individual Batch sheets
         this.batches.forEach((b, batchIdx) => {
             const sheetData = [];
             const activeRecords = b.records.filter(r => r.selected !== false);
             
-            // Row 1: TOTAL / SUMMARY ROW (Matching macro layout: A1:L1)
             const totalVol = activeRecords.reduce((sum, r) => sum + r.volume, 0);
             const totalQty = activeRecords.reduce((sum, r) => sum + r.qty, 0);
             const totalSku = activeRecords.reduce((sum, r) => sum + r.sku, 0);
@@ -509,14 +511,12 @@ class DOSummaryGenerator {
                 parseFloat(totalVol.toFixed(3)), totalQty, totalSku, `Wave : ${b.waveNumber}`
             ]);
 
-            // Row 2: Headers
             sheetData.push([
                 "INVOICE No.", "DIVISION", "SHP_CODE", "ROUTE",
                 "CONSIGNEE_NAME", "ADDRESS1", "ADDRESS2", "ADDRESS3",
                 "VOLUME", "QTY", "TOTAL SKU", "REMARK"
             ]);
 
-            // Row 3+: Data Rows
             activeRecords.forEach(r => {
                 sheetData.push([
                     r.invoiceNo, r.division, r.shpCode, r.route,
@@ -528,7 +528,6 @@ class DOSummaryGenerator {
             const ws = XLSX.utils.aoa_to_sheet(sheetData);
             const lastR = activeRecords.length + 2;
 
-            // Insert native Excel formulas
             ws['A1'] = { f: `SUBTOTAL(103,A3:A${lastR})`, z: '0 "DO"' };
             ws['E1'] = { v: `${b.batchName.toUpperCase()} SUMMARY` };
             ws['I1'] = { f: `SUBTOTAL(109,I3:I${lastR})`, z: '0.00000 "M3"' };
@@ -536,7 +535,6 @@ class DOSummaryGenerator {
             ws['K1'] = { f: `SUBTOTAL(109,K3:K${lastR})`, z: '0 "SKU"' };
             ws['L1'] = { v: `Wave : ${b.waveNumber}` };
 
-            // Apply Row 1 & Row 2 Styles
             ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'].forEach(col => {
                 const cellRef1 = `${col}1`;
                 if (!ws[cellRef1]) ws[cellRef1] = { v: "" };
@@ -546,7 +544,6 @@ class DOSummaryGenerator {
                 if (ws[cellRef2]) ws[cellRef2].s = styleHeader;
             });
 
-            // Apply Aptos Narrow & Highlight Styles to Data Rows (Row 3+)
             activeRecords.forEach((rec, rIdx) => {
                 const rowNum = rIdx + 3;
                 ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'].forEach(col => {
@@ -567,7 +564,6 @@ class DOSummaryGenerator {
                 });
             });
 
-            // Set Column Widths & Hide Columns G & H
             ws['!cols'] = [
                 { wch: 16.22 },                 // A: INVOICE No.
                 { wch: 5.66 },                  // B: DIVISION
@@ -575,8 +571,8 @@ class DOSummaryGenerator {
                 { wch: 6.44 },                  // D: ROUTE
                 { wch: 30.78 },                 // E: CONSIGNEE_NAME
                 { wch: 30.78 },                 // F: ADDRESS1
-                { wch: 30.78, hidden: true },   // G: ADDRESS2 (Hidden)
-                { wch: 22.44, hidden: true },   // H: ADDRESS3 (Hidden)
+                { wch: 30.78, hidden: true },   // G: ADDRESS2
+                { wch: 22.44, hidden: true },   // H: ADDRESS3
                 { wch: 12.44 },                 // I: VOLUME
                 { wch: 11.33 },                 // J: QTY
                 { wch: 10.33 },                 // K: TOTAL SKU
@@ -590,157 +586,135 @@ class DOSummaryGenerator {
             XLSX.utils.book_append_sheet(workbook, ws, b.batchName);
         });
 
-        // 2. Add Final Summary List Sheet ONLY if user clicked Compile Final Summary (matching FinalSummary.bas)
+        // 2. Add Final Summary List Sheet if compiled
         if (this.hasCompiledFinalSummary) {
-        const allFinalRecords = [];
-        const waveDict = {};
-        let challengerDOCount = 0;
+            const allFinalRecords = [];
+            const waveDict = {};
+            let challengerDOCount = 0;
 
-        this.batches.forEach(b => {
-            const batchCleanName = b.batchName.replace("Batch ", "");
-            const waveCleanNum = b.waveNumber || "-";
+            this.batches.forEach(b => {
+                const batchCleanName = b.batchName.replace("Batch ", "");
+                const waveCleanNum = b.waveNumber || "-";
 
-            if (waveDict[waveCleanNum]) {
-                waveDict[waveCleanNum] += `,${batchCleanName}`;
-            } else {
-                waveDict[waveCleanNum] = batchCleanName;
-            }
-
-            b.records.filter(r => r.selected !== false).forEach(r => {
-                allFinalRecords.push({ ...r, batchOrigin: b.batchName, waveNumber: b.waveNumber });
-                if (r.consignee && r.consignee.toUpperCase().includes("CHALLENGER")) {
-                    challengerDOCount++;
+                if (waveDict[waveCleanNum]) {
+                    waveDict[waveCleanNum] += `,${batchCleanName}`;
+                } else {
+                    waveDict[waveCleanNum] = batchCleanName;
                 }
-            });
-        });
-        const finalData = [];
 
-        // Row 1: Header Row
-        finalData.push([
-            "", "", "", "", "FINAL SUMMARY LIST", "", "", "",
-            0, 0, 0, "ALL WAVES"
-        ]);
-
-        // Row 2: Headers
-        finalData.push([
-            "INVOICE No.", "DIVISION", "SHP_CODE", "ROUTE",
-            "CONSIGNEE_NAME", "ADDRESS1", "ADDRESS2", "ADDRESS3",
-            "VOLUME", "QTY", "TOTAL SKU", "REMARK"
-        ]);
-
-        // Row 3+: Data Rows
-        allFinalRecords.forEach(r => {
-            finalData.push([
-                r.invoiceNo, r.division, r.shpCode, r.route,
-                r.consignee, r.addr1, r.addr2, r.addr3,
-                r.volume, r.qty, r.sku, r.remark
-            ]);
-        });
-
-        const wsFinal = XLSX.utils.aoa_to_sheet(finalData);
-        const finalLastR = allFinalRecords.length + 2;
-
-        // Insert native Excel formulas for Final Summary List
-        wsFinal['A1'] = { f: `SUBTOTAL(103,A3:A${finalLastR})`, z: '0 "DO"' };
-        wsFinal['E1'] = { v: "FINAL SUMMARY LIST" };
-        wsFinal['I1'] = { f: `SUBTOTAL(109,I3:I${finalLastR})`, z: '0.00000 "M3"' };
-        wsFinal['J1'] = { f: `SUBTOTAL(109,J3:J${finalLastR})`, z: '0 "QTY"' };
-        wsFinal['K1'] = { f: `SUBTOTAL(109,K3:K${finalLastR})`, z: '0 "SKU"' };
-        wsFinal['L1'] = { v: "" };
-
-        // Apply Row 1 & Row 2 Styles on Final Summary Sheet (All Red headers)
-        ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'].forEach(col => {
-            const cellRef1 = `${col}1`;
-            if (!wsFinal[cellRef1]) wsFinal[cellRef1] = { v: "" };
-            wsFinal[cellRef1].s = styleBatchSummaryHeader;
-        });
-
-        ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'].forEach(col => {
-            const cellRef2 = `${col}2`;
-            if (wsFinal[cellRef2]) wsFinal[cellRef2].s = styleHeader;
-        });
-
-        // Apply Aptos Narrow & Highlight Styles to Data Rows
-        allFinalRecords.forEach((rec, rIdx) => {
-            const rowNum = rIdx + 3;
-            ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'].forEach(col => {
-                const cellRef = `${col}${rowNum}`;
-                if (wsFinal[cellRef]) {
-                    if (col === 'A') {
-                        wsFinal[cellRef].s = styleBoldData;
-                    } else if (col === 'D' && (rec.missingRoute || !rec.route || rec.route.trim() === "" || rec.route === "-" || rec.route.toUpperCase() === "MISSING")) {
-                        wsFinal[cellRef].s = styleRemarkHighlight;
-                    } else if (col === 'I' && (rec.missingVolume || rec.volume <= 0)) {
-                        wsFinal[cellRef].s = styleRemarkHighlight;
-                    } else if (col === 'L' && rec.remark && rec.remark.trim() !== "" && rec.remark !== "-") {
-                        wsFinal[cellRef].s = styleRemarkHighlight;
-                    } else {
-                        wsFinal[cellRef].s = styleNormalData;
+                b.records.filter(r => r.selected !== false).forEach(r => {
+                    allFinalRecords.push({ ...r, batchOrigin: b.batchName, waveNumber: b.waveNumber });
+                    if (r.consignee && r.consignee.toUpperCase().includes("CHALLENGER")) {
+                        challengerDOCount++;
                     }
-                }
+                });
             });
-        });
+            const finalData = [];
 
-        // 3. Build Side Dashboard Table on Column N (Matching FinalSummary.bas & Reference Image)
-        wsFinal['N3'] = { v: "WAVE NUMBER", s: {
-            font: { name: "Aptos Narrow", sz: 13, bold: true, color: { rgb: "FFFFFF" } },
-            fill: { fgColor: { rgb: "E31B23" } },
-            alignment: { horizontal: "center", vertical: "center" }
-        }};
+            finalData.push([
+                "", "", "", "", "FINAL SUMMARY LIST", "", "", "",
+                0, 0, 0, "ALL WAVES"
+            ]);
 
-        let dashRow = 4;
-        Object.keys(waveDict).forEach(wave => {
-            const cellRef = `N${dashRow}`;
-            wsFinal[cellRef] = {
-                v: `  • Wave ${wave}  -->  Batch ${waveDict[wave]}`,
-                s: {
-                    font: { name: "Aptos Narrow", sz: 11, bold: true, color: { rgb: "000000" } },
-                    fill: { fgColor: { rgb: "FFEBEE" } },
-                    alignment: { horizontal: "left", vertical: "center" }
-                }
-            };
-            dashRow++;
-        });
+            finalData.push([
+                "INVOICE No.", "DIVISION", "SHP_CODE", "ROUTE",
+                "CONSIGNEE_NAME", "ADDRESS1", "ADDRESS2", "ADDRESS3",
+                "VOLUME", "QTY", "TOTAL SKU", "REMARK"
+            ]);
 
-        // Challenger DO Counter Card
-        const challengerCellRef = `N${dashRow + 1}`;
-        wsFinal[challengerCellRef] = {
-            v: `CHALLENGER DO : ${challengerDOCount}`,
-            s: {
-                font: { name: "Aptos Narrow", sz: 11, bold: true, color: { rgb: "FFFFFF" } },
+            allFinalRecords.forEach(r => {
+                finalData.push([
+                    r.invoiceNo, r.division, r.shpCode, r.route,
+                    r.consignee, r.addr1, r.addr2, r.addr3,
+                    r.volume, r.qty, r.sku, r.remark
+                ]);
+            });
+
+            const wsFinal = XLSX.utils.aoa_to_sheet(finalData);
+            const finalLastR = allFinalRecords.length + 2;
+
+            wsFinal['A1'] = { f: `SUBTOTAL(103,A3:A${finalLastR})`, z: '0 "DO"' };
+            wsFinal['E1'] = { v: "FINAL SUMMARY LIST" };
+            wsFinal['I1'] = { f: `SUBTOTAL(109,I3:I${finalLastR})`, z: '0.00000 "M3"' };
+            wsFinal['J1'] = { f: `SUBTOTAL(109,J3:J${finalLastR})`, z: '0 "QTY"' };
+            wsFinal['K1'] = { f: `SUBTOTAL(109,K3:K${finalLastR})`, z: '0 "SKU"' };
+            wsFinal['L1'] = { v: "" };
+
+            ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'].forEach(col => {
+                const cellRef1 = `${col}1`;
+                if (!wsFinal[cellRef1]) wsFinal[cellRef1] = { v: "" };
+                wsFinal[cellRef1].s = styleBatchSummaryHeader;
+
+                const cellRef2 = `${col}2`;
+                if (wsFinal[cellRef2]) wsFinal[cellRef2].s = styleHeader;
+            });
+
+            allFinalRecords.forEach((rec, rIdx) => {
+                const rowNum = rIdx + 3;
+                ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'].forEach(col => {
+                    const cellRef = `${col}${rowNum}`;
+                    if (wsFinal[cellRef]) {
+                        if (col === 'A') {
+                            wsFinal[cellRef].s = styleBoldData;
+                        } else if (col === 'D' && (rec.missingRoute || !rec.route || rec.route.trim() === "" || rec.route === "-" || rec.route.toUpperCase() === "MISSING")) {
+                            wsFinal[cellRef].s = styleRemarkHighlight;
+                        } else if (col === 'I' && (rec.missingVolume || rec.volume <= 0)) {
+                            wsFinal[cellRef].s = styleRemarkHighlight;
+                        } else if (col === 'L' && rec.remark && rec.remark.trim() !== "" && rec.remark !== "-") {
+                            wsFinal[cellRef].s = styleRemarkHighlight;
+                        } else {
+                            wsFinal[cellRef].s = styleNormalData;
+                        }
+                    }
+                });
+            });
+
+            wsFinal['N3'] = { v: "WAVE NUMBER", s: {
+                font: { name: "Aptos Narrow", sz: 13, bold: true, color: { rgb: "FFFFFF" } },
                 fill: { fgColor: { rgb: "E31B23" } },
                 alignment: { horizontal: "center", vertical: "center" }
-            }
-        };
+            }};
 
-        // Set Column Widths & Hidden Columns for Final Summary List
-        wsFinal['!cols'] = [
-            { wch: 16.22 },                 // A: INVOICE No.
-            { wch: 5.66 },                  // B: DIVISION
-            { wch: 14.55 },                 // C: SHP_CODE
-            { wch: 6.44 },                  // D: ROUTE
-            { wch: 30.78 },                 // E: CONSIGNEE_NAME
-            { wch: 30.78 },                 // F: ADDRESS1
-            { wch: 30.78, hidden: true },   // G: ADDRESS2 (Hidden)
-            { wch: 22.44, hidden: true },   // H: ADDRESS3 (Hidden)
-            { wch: 12.44 },                 // I: VOLUME
-            { wch: 11.33 },                 // J: QTY
-            { wch: 10.33 },                 // K: TOTAL SKU
-            { wch: 12.33 },                 // L: REMARK
-            { wch: 4.00 },                  // M: Spacer
-            { wch: 32.00 }                  // N: WAVE NUMBER / DASHBOARD
-        ];
+            let dashRow = 4;
+            Object.keys(waveDict).forEach(wave => {
+                const cellRef = `N${dashRow}`;
+                wsFinal[cellRef] = {
+                    v: `  • Wave ${wave}  -->  Batch ${waveDict[wave]}`,
+                    s: {
+                        font: { name: "Aptos Narrow", sz: 11, bold: true, color: { rgb: "000000" } },
+                        fill: { fgColor: { rgb: "FFEBEE" } },
+                        alignment: { horizontal: "left", vertical: "center" }
+                    }
+                };
+                dashRow++;
+            });
 
-        const maxRow = Math.max(finalLastR, dashRow + 1);
-        wsFinal['!ref'] = `A1:N${maxRow}`;
-        wsFinal['!autofilter'] = { ref: `A2:L${finalLastR}` };
-        wsFinal['!freeze'] = { xSplit: 0, ySplit: 2, topLeftCell: 'A3', activePane: 'bottomLeft', state: 'frozen' };
-        wsFinal['!tabColor'] = { rgb: "FF0000" };
+            const challengerCellRef = `N${dashRow + 1}`;
+            wsFinal[challengerCellRef] = {
+                v: `CHALLENGER DO : ${challengerDOCount}`,
+                s: {
+                    font: { name: "Aptos Narrow", sz: 11, bold: true, color: { rgb: "FFFFFF" } },
+                    fill: { fgColor: { rgb: "E31B23" } },
+                    alignment: { horizontal: "center", vertical: "center" }
+                }
+            };
 
-        XLSX.utils.book_append_sheet(workbook, wsFinal, "Final Summary List");
+            wsFinal['!cols'] = [
+                { wch: 16.22 }, { wch: 5.66 }, { wch: 14.55 }, { wch: 6.44 },
+                { wch: 30.78 }, { wch: 30.78 }, { wch: 30.78, hidden: true }, { wch: 22.44, hidden: true },
+                { wch: 12.44 }, { wch: 11.33 }, { wch: 10.33 }, { wch: 12.33 },
+                { wch: 4.00 }, { wch: 32.00 }
+            ];
+
+            const maxRow = Math.max(finalLastR, dashRow + 1);
+            wsFinal['!ref'] = `A1:N${maxRow}`;
+            wsFinal['!autofilter'] = { ref: `A2:L${finalLastR}` };
+            wsFinal['!freeze'] = { xSplit: 0, ySplit: 2, topLeftCell: 'A3', activePane: 'bottomLeft', state: 'frozen' };
+            wsFinal['!tabColor'] = { rgb: "FF0000" };
+
+            XLSX.utils.book_append_sheet(workbook, wsFinal, "Final Summary List");
         }
 
-        // Determine file name
         let exportFileName = this.targetFileName || "";
         if (!exportFileName) {
             const tomorrow = new Date();
@@ -754,7 +728,6 @@ class DOSummaryGenerator {
             exportFileName += ".xlsx";
         }
 
-        // Explicit HTML5 Blob download (bypasses SheetJS internal write constraints on file:///)
         try {
             const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
             const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
@@ -806,7 +779,6 @@ class DOSummaryGenerator {
         const prev = select.value;
         select.innerHTML = options;
 
-        // Default to the currently active batch tab
         if (prev && Array.from(select.options).some(o => o.value === prev)) {
             select.value = prev;
         } else {
@@ -817,7 +789,6 @@ class DOSummaryGenerator {
     }
 
     onEmailTargetChange(value) {
-        // Keep the selected batch preview in sync with the email target
         if (value && value.startsWith("batch-")) {
             const idx = parseInt(value.replace("batch-", ""), 10);
             if (!isNaN(idx) && this.batches[idx]) {
@@ -827,7 +798,6 @@ class DOSummaryGenerator {
         }
     }
 
-    // Build the DO Summary email body for the selected target (Batch or Final Summary)
     async generateEmail() {
         const select = document.getElementById("emailTargetSelect");
         const target = select ? select.value : "";
@@ -968,7 +938,6 @@ class DOSummaryGenerator {
     }
 
     addManualDO() {
-        // If no batches exist, create Batch 01 first
         if (this.batches.length === 0) {
             const waveInput = prompt("Enter Wave Number for new Batch 01:", "01");
             if (waveInput === null) return;
@@ -980,7 +949,6 @@ class DOSummaryGenerator {
             });
             this.currentBatchIndex = 0;
 
-            // Also prompt for date on first batch
             const tomorrow = new Date();
             tomorrow.setDate(tomorrow.getDate() + 1);
             const dd = String(tomorrow.getDate()).padStart(2, '0');
@@ -993,8 +961,6 @@ class DOSummaryGenerator {
         }
 
         const activeBatch = this.batches[this.currentBatchIndex];
-
-        // Generate a placeholder invoice number: MANUAL-001, MANUAL-002, etc.
         const existingManualCount = activeBatch.records.filter(r => r.invoiceNo.startsWith("MANUAL-")).length;
         const nextNum = String(existingManualCount + 1).padStart(3, '0');
 
@@ -1020,7 +986,6 @@ class DOSummaryGenerator {
         this.saveToStorage();
         this.renderUI();
 
-        // Auto-scroll the table to the bottom to show the new row
         requestAnimationFrame(() => {
             const wrapper = document.querySelector('.compact-wrapper');
             if (wrapper) wrapper.scrollTop = wrapper.scrollHeight;
@@ -1113,7 +1078,6 @@ class DOSummaryGenerator {
         const activeBatch = this.batches[this.currentBatchIndex];
         const records = activeBatch.records;
 
-        // Apply Real-Time Search Filter
         const filteredRecords = [];
         records.forEach((r, originalIdx) => {
             if (this.searchQuery) {
@@ -1123,7 +1087,6 @@ class DOSummaryGenerator {
             filteredRecords.push({ record: r, idx: originalIdx });
         });
 
-        // Update Search Counter Badge
         if (elSearchCount) {
             elSearchCount.style.display = "inline-block";
             if (this.searchQuery) {
@@ -1192,7 +1155,6 @@ class DOSummaryGenerator {
                 onchange="summaryGenerator.updateVolume(${bi}, ${idx}, this.value)" 
                 style="width: 80px; text-align: right;">`;
 
-            // For manual rows, render all key fields as editable inputs
             if (isManual) {
                 html += `<tr style="background: rgba(59, 130, 246, 0.05);">
                     <td style="text-align: center;">
