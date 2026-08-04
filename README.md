@@ -2,6 +2,19 @@
 
 Multi-page analytics dashboard for Delivery Order (DO) status tracking, truck planning, batch analytics and shipping insight. Pure **HTML5 + CSS3 + vanilla JavaScript (ES6+)** — no framework, no build step. Excel files are parsed directly in the browser with SheetJS, and charts are rendered with Chart.js.
 
+## ✨ Recent Updates & Enhancements
+
+- **📊 Dynamic Filtered KPI Cards (DO Summary Generator)**:
+  - KPI cards (Total DOs, Volume, Quantity, SKU) now recalculate in real-time when search filters or text queries are applied to DO records.
+  - Automatic dynamic indicator labels switch between *Parsed Orders* and *Filtered Orders* during active search sessions.
+- **💻 Laptop-Friendly Responsive 2-Column Grid**:
+  - Re-architected the DO Summary Generator header layout into a responsive 2-column grid (`1fr 340px`/`380px`), ensuring high readability and minimal vertical scrolling on laptops and wide screens.
+- **⚡ Quick Remarks & Presets Side Panel**:
+  - Added a collapsible sticky side panel for 1-click bulk remark application (`SELF COLLECT`, `HOLD`, `LOCAL DELIVERY`, `DIRECT DELIVERY`, `URGENT`, `CANCELLED`, `CLEAR REMARK`).
+  - Integrated custom bulk remark input for fast multi-row assignment and quick manual DO row additions.
+- **🔄 Supplementary Missing Info Updater**:
+  - Added secondary CSV/Excel file import ("Update Missing Info") to seamlessly patch missing customer addresses, routes, or item details across existing DO batches without overwriting manual edits.
+
 ## Features
 
 - **In-browser Excel import** — upload DO Summary, Batch Picking (`.xlsm`) and Shipping Insight files (`.xlsx`, `.xls`, `.csv`) via drag-and-drop file pickers; everything is parsed client-side with SheetJS.
@@ -20,7 +33,7 @@ Multi-page analytics dashboard for Delivery Order (DO) status tracking, truck pl
 | DO Details Inspector | `do_details.html` | Drill into individual delivery-order records |
 | Truck Planning | `truck_planning.html` | Daily truck/summary manifest planning with batch tab and in-table editing |
 | Batch Analytics | `batch_analytics.html` | Batch-picking analytics and charts |
-| DO Summary Generator | `do_summary_generator.html` | Compile/export DO summary data |
+| DO Summary Generator | `do_summary_generator.html` | Compile, filter, annotate, and export DO summary data |
 | Challenger List | `challenger_list.html` | Track and filter challenger deliveries |
 | DO Activity Trend | `do_activity_trend.html` | Activity-over-time trend charts |
 
@@ -66,6 +79,21 @@ python -m http.server 8000
 ```
 
 Then open `http://localhost:8000` and upload a DO Summary file (`.xlsx`) to start.
+
+## Pushing Changes to GitHub
+
+To push your latest changes to your remote GitHub repository, run the following standard git commands in your terminal:
+
+```bash
+# 1. Stage all updated files
+git add .
+
+# 2. Commit your changes with a descriptive message
+git commit -m "feat: add dynamic KPI filtering, quick remarks panel, and laptop-friendly layout to DO summary generator"
+
+# 3. Push to your main branch (e.g., main or master)
+git push origin main
+```
 
 ## Project Structure
 
